@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is the Super Admin
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email == 'lexcorp0777@gmail.com';
+    }
+    
+    // Helper function to check if user is admin or super admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             (isSuperAdmin() || 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Admins can read all user profiles
+      allow read: if isAdmin();
+      
+      // Users can create their own profile on first sign-in
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Users can update their own profile (except role and status)
+      allow update: if isAuthenticated() && request.auth.uid == userId &&
+                       !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status']);
+      
+      // Only Super Admin can update roles and status
+      allow update: if isSuperAdmin();
+      
+      // CRITICAL: Super Admin account (lexcorp0777@gmail.com) cannot be deleted
+      allow delete: if isSuperAdmin() && 
+                       resource.data.email != 'lexcorp0777@gmail.com';
+    }
+    
+    // Products collection
+    match /products/{productId} {
+      // Anyone can read products
+      allow read: if true;
+      
+      // Only admins can create, update, delete products
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Testimonials collection
+    match /testimonials/{testimonialId} {
+      // Anyone can read testimonials
+      allow read: if true;
+      
+      // Only admins can manage testimonials
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // FAQs collection
+    match /faqs/{faqId} {
+      // Anyone can read FAQs
+      allow read: if true;
+      
+      // Only admins can manage FAQs
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Inquiries collection
+    match /inquiries/{inquiryId} {
+      // Anyone can create inquiries (contact forms)
+      allow create: if true;
+      
+      // Only admins can read and manage inquiries
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // Settings collection (contact info, etc.)
+    match /settings/{settingId} {
+      // Anyone can read settings
+      allow read: if true;
+      
+      // Only Super Admin can modify global settings
+      allow create, update, delete: if isSuperAdmin();
+    }
+    
+    // Gallery collection
+    match /gallery/{imageId} {
+      // Anyone can read gallery
+      allow read: if true;
+      
+      // Only admins can manage gallery
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

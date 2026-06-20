@@ -1,0 +1,44 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is the Super Admin
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email == 'lexcorp0777@gmail.com';
+    }
+    
+    // Product images
+    match /products/{allPaths=**} {
+      // Anyone can read product images
+      allow read: if true;
+      
+      // Only authenticated admins can upload
+      // Note: Full admin check requires custom claims or Firestore lookup
+      allow write: if isAuthenticated();
+    }
+    
+    // Gallery images
+    match /gallery/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    
+    // Testimonial images
+    match /testimonials/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    
+    // General uploads
+    match /uploads/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+  }
+}
