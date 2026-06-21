@@ -7,15 +7,24 @@ export default function QuoteRequest() {
   const { addInquiry } = useStore();
   const [form, setForm] = useState({ name: '', email: '', phone: '', rooms: '', budget: '', message: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInquiry({
-      id: `inq-${Date.now()}`, type: 'quote', name: form.name, email: form.email, phone: form.phone,
-      message: `Quote Request: Rooms: ${form.rooms}, Budget: ${form.budget}. ${form.message}`,
-      status: 'new', createdAt: new Date().toISOString(),
-    });
-    toast.success('Quote request submitted! We\'ll send your personalized quote within 24 hours.');
-    setForm({ name: '', email: '', phone: '', rooms: '', budget: '', message: '' });
+    setSubmitting(true);
+    try {
+      await addInquiry({
+        id: `inq-${Date.now()}`, type: 'quote', name: form.name, email: form.email, phone: form.phone,
+        message: `Quote Request: Rooms: ${form.rooms}, Budget: ${form.budget}. ${form.message}`,
+        status: 'new', createdAt: new Date().toISOString(),
+      });
+      toast.success('Quote request submitted! We\'ll send your personalized quote within 24 hours.');
+      setForm({ name: '', email: '', phone: '', rooms: '', budget: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting quote:', error);
+      toast.error('Failed to submit. Please try again.');
+    }
+    setSubmitting(false);
   };
 
   return (

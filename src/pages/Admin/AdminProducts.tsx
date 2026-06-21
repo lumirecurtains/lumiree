@@ -66,36 +66,51 @@ export default function AdminProducts() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name || !form.category || !form.price) {
       toast.error('Name, category, and price are required');
       return;
     }
     const slug = form.slug || form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    if (editing) {
-      updateProduct(editing.id, { ...form, slug });
-      toast.success('Product updated!');
-    } else {
-      addProduct({ ...form, id: `prod-${Date.now()}`, slug });
-      toast.success('Product created!');
+    try {
+      if (editing) {
+        await updateProduct(editing.id, { ...form, slug });
+        toast.success('Product updated!');
+      } else {
+        await addProduct({ ...form, id: `prod-${Date.now()}`, slug });
+        toast.success('Product created!');
+      }
+      closeForm();
+    } catch (error) {
+      console.error('Error saving product:', error);
+      toast.error('Failed to save product. Check console for details.');
     }
-    closeForm();
   };
 
-  const handleDuplicate = (product: Product) => {
-    addProduct({
-      ...product,
-      id: `prod-${Date.now()}`,
-      name: `${product.name} (Copy)`,
-      slug: `${product.slug}-copy-${Date.now()}`,
-    });
-    toast.success('Product duplicated!');
+  const handleDuplicate = async (product: Product) => {
+    try {
+      await addProduct({
+        ...product,
+        id: `prod-${Date.now()}`,
+        name: `${product.name} (Copy)`,
+        slug: `${product.slug}-copy-${Date.now()}`,
+      });
+      toast.success('Product duplicated!');
+    } catch (error) {
+      console.error('Error duplicating product:', error);
+      toast.error('Failed to duplicate product.');
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Delete this product?')) {
-      deleteProduct(id);
-      toast.success('Product deleted');
+      try {
+        await deleteProduct(id);
+        toast.success('Product deleted');
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        toast.error('Failed to delete product.');
+      }
     }
   };
 

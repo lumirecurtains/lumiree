@@ -8,20 +8,49 @@ export default function AdminTestimonials() {
   const { testimonials, addTestimonial, updateTestimonial, deleteTestimonial } = useStore();
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [creating, setCreating] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: '', role: '', text: '', rating: 5, image: '', featured: true });
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name || !form.text) { toast.error('Name and text are required'); return; }
-    if (editing) {
-      updateTestimonial(editing.id, form);
-      toast.success('Testimonial updated!');
-    } else {
-      addTestimonial({ ...form, id: `t-${Date.now()}` });
-      toast.success('Testimonial added!');
+    setSaving(true);
+    try {
+      if (editing) {
+        await updateTestimonial(editing.id, form);
+        toast.success('Testimonial updated!');
+      } else {
+        await addTestimonial({ ...form, id: `t-${Date.now()}` });
+        toast.success('Testimonial added!');
+      }
+      setEditing(null);
+      setCreating(false);
+      setForm({ name: '', role: '', text: '', rating: 5, image: '', featured: true });
+    } catch (error) {
+      console.error('Error saving testimonial:', error);
+      toast.error('Failed to save testimonial.');
     }
-    setEditing(null);
-    setCreating(false);
-    setForm({ name: '', role: '', text: '', rating: 5, image: '', featured: true });
+    setSaving(false);
+  };
+
+  const handleToggleFeatured = async (t: Testimonial) => {
+    try {
+      await updateTestimonial(t.id, { featured: !t.featured });
+    } catch (error) {
+      console.error('Error updating testimonial:', error);
+      toast.error('Failed to update.');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Delete this testimonial?')) {
+      try {
+        await deleteTestimonial(id);
+        toast.success('Deleted');
+      } catch (error) {
+        console.error('Error deleting testimonial:', error);
+        toast.error('Failed to delete.');
+      }
+    }
   };
 
   return (
@@ -53,7 +82,9 @@ export default function AdminTestimonials() {
               <input type="checkbox" checked={form.featured} onChange={e => setForm({...form, featured: e.target.checked})} /> Show on Homepage
             </label>
           </div>
-          <button onClick={handleSave} className="px-6 py-2 bg-gold-700 text-white rounded-lg hover:bg-gold-800 text-sm font-medium">Save</button>
+          <button onClick={handleSave} disabled={saving} className="px-6 py-2 bg-gold-700 text-white rounded-lg hover:bg-gold-800 text-sm font-medium disabled:opacity-50">
+            {saving ? 'Saving...' : 'Save'}
+          </button>
         </div>
       )}
 
@@ -73,11 +104,11 @@ export default function AdminTestimonials() {
               <p className="text-sm text-stone-600">"{t.text}"</p>
             </div>
             <div className="flex items-center gap-1">
-              <button onClick={() => updateTestimonial(t.id, { featured: !t.featured })} className="p-2 hover:bg-stone-100 rounded-lg text-stone-400" title={t.featured ? 'Hide' : 'Show'}>
+              <button onClick={() => handleToggleFeatured(t)} className="p-2 hover:bg-stone-100 rounded-lg text-stone-400" title={t.featured ? 'Hide' : 'Show'}>
                 {t.featured ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
               </button>
               <button onClick={() => { setEditing(t); setForm({...t}); setCreating(false); }} className="p-2 hover:bg-stone-100 rounded-lg text-stone-400 hover:text-blue-600"><Edit className="w-4 h-4" /></button>
-              <button onClick={() => { if(confirm('Delete?')) { deleteTestimonial(t.id); toast.success('Deleted'); }}} className="p-2 hover:bg-stone-100 rounded-lg text-stone-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+              <button onClick={() => handleDelete(t.id)} className="p-2 hover:bg-stone-100 rounded-lg text-stone-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
             </div>
           </div>
         ))}

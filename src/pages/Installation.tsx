@@ -8,15 +8,24 @@ export default function Installation() {
   const { addInquiry, contactInfo } = useStore();
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', date: '', notes: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInquiry({
-      id: `inq-${Date.now()}`, type: 'installation', name: form.name, email: form.email, phone: form.phone,
-      message: `Installation Request: Address: ${form.address}, Date: ${form.date}. Notes: ${form.notes}`,
-      status: 'new', createdAt: new Date().toISOString(),
-    });
-    toast.success('Installation request submitted!');
-    setForm({ name: '', email: '', phone: '', address: '', date: '', notes: '' });
+    setSubmitting(true);
+    try {
+      await addInquiry({
+        id: `inq-${Date.now()}`, type: 'installation', name: form.name, email: form.email, phone: form.phone,
+        message: `Installation Request: Address: ${form.address}, Date: ${form.date}. Notes: ${form.notes}`,
+        status: 'new', createdAt: new Date().toISOString(),
+      });
+      toast.success('Installation request submitted!');
+      setForm({ name: '', email: '', phone: '', address: '', date: '', notes: '' });
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      toast.error('Failed to submit. Please try again.');
+    }
+    setSubmitting(false);
   };
 
   return (

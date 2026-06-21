@@ -1,4 +1,19 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { 
+  collection, 
+  doc,
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  onSnapshot,
+  setDoc,
+  getDoc,
+  query,
+  orderBy,
+  serverTimestamp,
+  Timestamp
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { Product, Testimonial, FAQ, Inquiry, ContactInfo } from '@/lib/types';
 import { SAMPLE_PRODUCTS, SAMPLE_TESTIMONIALS, SAMPLE_FAQS, WHATSAPP_NUMBER, PHONE_NUMBER, BUSINESS_EMAIL, BUSINESS_ADDRESS } from '@/lib/constants';
 
@@ -10,20 +25,21 @@ interface StoreContextType {
   wishlist: string[];
   recentlyViewed: string[];
   contactInfo: ContactInfo;
-  addProduct: (product: Product) => void;
-  updateProduct: (id: string, updates: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  addTestimonial: (t: Testimonial) => void;
-  updateTestimonial: (id: string, updates: Partial<Testimonial>) => void;
-  deleteTestimonial: (id: string) => void;
-  addFaq: (f: FAQ) => void;
-  updateFaq: (id: string, updates: Partial<FAQ>) => void;
-  deleteFaq: (id: string) => void;
-  addInquiry: (i: Inquiry) => void;
-  updateInquiryStatus: (id: string, status: Inquiry['status']) => void;
+  loading: boolean;
+  addProduct: (product: Product) => Promise<void>;
+  updateProduct: (id: string, updates: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
+  addTestimonial: (t: Testimonial) => Promise<void>;
+  updateTestimonial: (id: string, updates: Partial<Testimonial>) => Promise<void>;
+  deleteTestimonial: (id: string) => Promise<void>;
+  addFaq: (f: FAQ) => Promise<void>;
+  updateFaq: (id: string, updates: Partial<FAQ>) => Promise<void>;
+  deleteFaq: (id: string) => Promise<void>;
+  addInquiry: (i: Inquiry) => Promise<void>;
+  updateInquiryStatus: (id: string, status: Inquiry['status']) => Promise<void>;
   toggleWishlist: (productId: string) => void;
   addToRecentlyViewed: (productId: string) => void;
-  updateContactInfo: (info: Partial<ContactInfo>) => void;
+  updateContactInfo: (info: Partial<ContactInfo>) => Promise<void>;
   getProductBySlug: (slug: string) => Product | undefined;
   getProductById: (id: string) => Product | undefined;
   getProductsByCategory: (cat: string) => Product[];
@@ -41,6 +57,7 @@ export function useStore() {
   return context;
 }
 
+// Local storage helpers for user-specific data (wishlist, recently viewed)
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
     const stored = localStorage.getItem(`luxdrape_${key}`);
@@ -74,65 +91,329 @@ const defaultContactInfo: ContactInfo = {
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(() => loadFromStorage('products', SAMPLE_PRODUCTS));
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => loadFromStorage('testimonials', SAMPLE_TESTIMONIALS));
-  const [faqs, setFaqs] = useState<FAQ[]>(() => loadFromStorage('faqs', SAMPLE_FAQS));
-  const [inquiries, setInquiries] = useState<Inquiry[]>(() => loadFromStorage('inquiries', []));
+  // Firestore-backed state
+  const [products, setProducts] = useState<Product[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [contactInfo, setContactInfo] = useState<ContactInfo>(defaultContactInfo);
+  const [loading, setLoading] = useState(true);
+  
+  // Local storage backed state (user-specific, not business data)
   const [wishlist, setWishlist] = useState<string[]>(() => loadFromStorage('wishlist', []));
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>(() => loadFromStorage('recentlyViewed', []));
-  const [contactInfo, setContactInfo] = useState<ContactInfo>(() => loadFromStorage('contactInfo', defaultContactInfo));
 
-  useEffect(() => { saveToStorage('products', products); }, [products]);
-  useEffect(() => { saveToStorage('testimonials', testimonials); }, [testimonials]);
-  useEffect(() => { saveToStorage('faqs', faqs); }, [faqs]);
-  useEffect(() => { saveToStorage('inquiries', inquiries); }, [inquiries]);
+  // Save user-specific data to localStorage
   useEffect(() => { saveToStorage('wishlist', wishlist); }, [wishlist]);
   useEffect(() => { saveToStorage('recentlyViewed', recentlyViewed); }, [recentlyViewed]);
-  useEffect(() => { saveToStorage('contactInfo', contactInfo); }, [contactInfo]);
 
-  const addProduct = useCallback((product: Product) => {
-    setProducts(prev => [...prev, { ...product, createdAt: new Date().toISOString() }]);
+  // ============================================
+  // FIRESTORE REAL-TIME LISTENERS
+  // ============================================
+
+  useEffect(() => {
+    console.log('🔥 Setting up Firestore listeners...');
+    
+    // Products listener
+    const productsUnsubscribe = onSnapshot(
+      collection(db, 'products'),
+      (snapshot) => {
+        const productsData: Product[] = [];
+        snapshot.forEach((doc) => {
+          productsData.push({ id: doc.id, ...doc.data() } as Product);
+        });
+        console.log(`📦 Products loaded from Firestore: ${productsData.length}`);
+        
+        // If no products in Firestore, seed with sample data
+        if (productsData.length === 0) {
+          console.log('📦 No products found, using sample data...');
+          setProducts(SAMPLE_PRODUCTS);
+        } else {
+          setProducts(productsData);
+        }
+      },
+      (error) => {
+        console.error('❌ Products listener error:', error);
+        // Fallback to sample data on error
+        setProducts(SAMPLE_PRODUCTS);
+      }
+    );
+
+    // Testimonials listener
+    const testimonialsUnsubscribe = onSnapshot(
+      collection(db, 'testimonials'),
+      (snapshot) => {
+        const testimonialsData: Testimonial[] = [];
+        snapshot.forEach((doc) => {
+          testimonialsData.push({ id: doc.id, ...doc.data() } as Testimonial);
+        });
+        console.log(`⭐ Testimonials loaded from Firestore: ${testimonialsData.length}`);
+        
+        if (testimonialsData.length === 0) {
+          setTestimonials(SAMPLE_TESTIMONIALS);
+        } else {
+          setTestimonials(testimonialsData);
+        }
+      },
+      (error) => {
+        console.error('❌ Testimonials listener error:', error);
+        setTestimonials(SAMPLE_TESTIMONIALS);
+      }
+    );
+
+    // FAQs listener
+    const faqsUnsubscribe = onSnapshot(
+      collection(db, 'faqs'),
+      (snapshot) => {
+        const faqsData: FAQ[] = [];
+        snapshot.forEach((doc) => {
+          faqsData.push({ id: doc.id, ...doc.data() } as FAQ);
+        });
+        console.log(`❓ FAQs loaded from Firestore: ${faqsData.length}`);
+        
+        if (faqsData.length === 0) {
+          setFaqs(SAMPLE_FAQS);
+        } else {
+          setFaqs(faqsData);
+        }
+      },
+      (error) => {
+        console.error('❌ FAQs listener error:', error);
+        setFaqs(SAMPLE_FAQS);
+      }
+    );
+
+    // Inquiries listener
+    const inquiriesUnsubscribe = onSnapshot(
+      collection(db, 'inquiries'),
+      (snapshot) => {
+        const inquiriesData: Inquiry[] = [];
+        snapshot.forEach((doc) => {
+          inquiriesData.push({ id: doc.id, ...doc.data() } as Inquiry);
+        });
+        // Sort by createdAt descending
+        inquiriesData.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        console.log(`📩 Inquiries loaded from Firestore: ${inquiriesData.length}`);
+        setInquiries(inquiriesData);
+      },
+      (error) => {
+        console.error('❌ Inquiries listener error:', error);
+        setInquiries([]);
+      }
+    );
+
+    // Contact Info listener (single document)
+    const contactInfoUnsubscribe = onSnapshot(
+      doc(db, 'settings', 'contactInfo'),
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          console.log('📞 Contact info loaded from Firestore');
+          setContactInfo(docSnapshot.data() as ContactInfo);
+        } else {
+          console.log('📞 No contact info found, using defaults');
+          setContactInfo(defaultContactInfo);
+        }
+        setLoading(false);
+      },
+      (error) => {
+        console.error('❌ Contact info listener error:', error);
+        setContactInfo(defaultContactInfo);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup listeners on unmount
+    return () => {
+      console.log('🔥 Cleaning up Firestore listeners...');
+      productsUnsubscribe();
+      testimonialsUnsubscribe();
+      faqsUnsubscribe();
+      inquiriesUnsubscribe();
+      contactInfoUnsubscribe();
+    };
   }, []);
 
-  const updateProduct = useCallback((id: string, updates: Partial<Product>) => {
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updates, updatedAt: new Date().toISOString() } : p));
+  // ============================================
+  // PRODUCT OPERATIONS
+  // ============================================
+
+  const addProduct = useCallback(async (product: Product) => {
+    try {
+      console.log('📦 Adding product to Firestore:', product.name);
+      const { id, ...productData } = product;
+      const docRef = await addDoc(collection(db, 'products'), {
+        ...productData,
+        createdAt: new Date().toISOString(),
+      });
+      console.log('✅ Product added with ID:', docRef.id);
+    } catch (error) {
+      console.error('❌ Error adding product:', error);
+      throw error;
+    }
   }, []);
 
-  const deleteProduct = useCallback((id: string) => {
-    setProducts(prev => prev.filter(p => p.id !== id));
+  const updateProduct = useCallback(async (id: string, updates: Partial<Product>) => {
+    try {
+      console.log('📦 Updating product in Firestore:', id);
+      const productRef = doc(db, 'products', id);
+      await updateDoc(productRef, {
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      });
+      console.log('✅ Product updated:', id);
+    } catch (error) {
+      console.error('❌ Error updating product:', error);
+      throw error;
+    }
   }, []);
 
-  const addTestimonial = useCallback((t: Testimonial) => {
-    setTestimonials(prev => [...prev, t]);
+  const deleteProduct = useCallback(async (id: string) => {
+    try {
+      console.log('📦 Deleting product from Firestore:', id);
+      await deleteDoc(doc(db, 'products', id));
+      console.log('✅ Product deleted:', id);
+    } catch (error) {
+      console.error('❌ Error deleting product:', error);
+      throw error;
+    }
   }, []);
 
-  const updateTestimonial = useCallback((id: string, updates: Partial<Testimonial>) => {
-    setTestimonials(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+  // ============================================
+  // TESTIMONIAL OPERATIONS
+  // ============================================
+
+  const addTestimonial = useCallback(async (testimonial: Testimonial) => {
+    try {
+      console.log('⭐ Adding testimonial to Firestore:', testimonial.name);
+      const { id, ...testimonialData } = testimonial;
+      await addDoc(collection(db, 'testimonials'), testimonialData);
+      console.log('✅ Testimonial added');
+    } catch (error) {
+      console.error('❌ Error adding testimonial:', error);
+      throw error;
+    }
   }, []);
 
-  const deleteTestimonial = useCallback((id: string) => {
-    setTestimonials(prev => prev.filter(t => t.id !== id));
+  const updateTestimonial = useCallback(async (id: string, updates: Partial<Testimonial>) => {
+    try {
+      console.log('⭐ Updating testimonial in Firestore:', id);
+      const testimonialRef = doc(db, 'testimonials', id);
+      await updateDoc(testimonialRef, updates);
+      console.log('✅ Testimonial updated:', id);
+    } catch (error) {
+      console.error('❌ Error updating testimonial:', error);
+      throw error;
+    }
   }, []);
 
-  const addFaq = useCallback((f: FAQ) => {
-    setFaqs(prev => [...prev, f]);
+  const deleteTestimonial = useCallback(async (id: string) => {
+    try {
+      console.log('⭐ Deleting testimonial from Firestore:', id);
+      await deleteDoc(doc(db, 'testimonials', id));
+      console.log('✅ Testimonial deleted:', id);
+    } catch (error) {
+      console.error('❌ Error deleting testimonial:', error);
+      throw error;
+    }
   }, []);
 
-  const updateFaq = useCallback((id: string, updates: Partial<FAQ>) => {
-    setFaqs(prev => prev.map(f => f.id === id ? { ...f, ...updates } : f));
+  // ============================================
+  // FAQ OPERATIONS
+  // ============================================
+
+  const addFaq = useCallback(async (faq: FAQ) => {
+    try {
+      console.log('❓ Adding FAQ to Firestore:', faq.question);
+      const { id, ...faqData } = faq;
+      await addDoc(collection(db, 'faqs'), faqData);
+      console.log('✅ FAQ added');
+    } catch (error) {
+      console.error('❌ Error adding FAQ:', error);
+      throw error;
+    }
   }, []);
 
-  const deleteFaq = useCallback((id: string) => {
-    setFaqs(prev => prev.filter(f => f.id !== id));
+  const updateFaq = useCallback(async (id: string, updates: Partial<FAQ>) => {
+    try {
+      console.log('❓ Updating FAQ in Firestore:', id);
+      const faqRef = doc(db, 'faqs', id);
+      await updateDoc(faqRef, updates);
+      console.log('✅ FAQ updated:', id);
+    } catch (error) {
+      console.error('❌ Error updating FAQ:', error);
+      throw error;
+    }
   }, []);
 
-  const addInquiry = useCallback((i: Inquiry) => {
-    setInquiries(prev => [i, ...prev]);
+  const deleteFaq = useCallback(async (id: string) => {
+    try {
+      console.log('❓ Deleting FAQ from Firestore:', id);
+      await deleteDoc(doc(db, 'faqs', id));
+      console.log('✅ FAQ deleted:', id);
+    } catch (error) {
+      console.error('❌ Error deleting FAQ:', error);
+      throw error;
+    }
   }, []);
 
-  const updateInquiryStatus = useCallback((id: string, status: Inquiry['status']) => {
-    setInquiries(prev => prev.map(i => i.id === id ? { ...i, status } : i));
+  // ============================================
+  // INQUIRY OPERATIONS
+  // ============================================
+
+  const addInquiry = useCallback(async (inquiry: Inquiry) => {
+    try {
+      console.log('📩 Adding inquiry to Firestore:', inquiry.type);
+      const { id, ...inquiryData } = inquiry;
+      await addDoc(collection(db, 'inquiries'), {
+        ...inquiryData,
+        createdAt: new Date().toISOString(),
+      });
+      console.log('✅ Inquiry added');
+    } catch (error) {
+      console.error('❌ Error adding inquiry:', error);
+      throw error;
+    }
   }, []);
+
+  const updateInquiryStatus = useCallback(async (id: string, status: Inquiry['status']) => {
+    try {
+      console.log('📩 Updating inquiry status in Firestore:', id, status);
+      const inquiryRef = doc(db, 'inquiries', id);
+      await updateDoc(inquiryRef, { status });
+      console.log('✅ Inquiry status updated:', id);
+    } catch (error) {
+      console.error('❌ Error updating inquiry status:', error);
+      throw error;
+    }
+  }, []);
+
+  // ============================================
+  // CONTACT INFO OPERATIONS
+  // ============================================
+
+  const updateContactInfo = useCallback(async (info: Partial<ContactInfo>) => {
+    try {
+      console.log('📞 Updating contact info in Firestore');
+      const contactRef = doc(db, 'settings', 'contactInfo');
+      const currentDoc = await getDoc(contactRef);
+      
+      if (currentDoc.exists()) {
+        await updateDoc(contactRef, info);
+      } else {
+        await setDoc(contactRef, { ...defaultContactInfo, ...info });
+      }
+      console.log('✅ Contact info updated');
+    } catch (error) {
+      console.error('❌ Error updating contact info:', error);
+      throw error;
+    }
+  }, []);
+
+  // ============================================
+  // LOCAL OPERATIONS (Wishlist & Recently Viewed)
+  // ============================================
 
   const toggleWishlist = useCallback((productId: string) => {
     setWishlist(prev => 
@@ -147,9 +428,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const updateContactInfo = useCallback((info: Partial<ContactInfo>) => {
-    setContactInfo(prev => ({ ...prev, ...info }));
-  }, []);
+  // ============================================
+  // QUERY HELPERS
+  // ============================================
 
   const getProductBySlug = useCallback((slug: string) => products.find(p => p.slug === slug), [products]);
   const getProductById = useCallback((id: string) => products.find(p => p.id === id), [products]);
@@ -170,14 +451,35 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider value={{
-      products, testimonials, faqs, inquiries, wishlist, recentlyViewed, contactInfo,
-      addProduct, updateProduct, deleteProduct,
-      addTestimonial, updateTestimonial, deleteTestimonial,
-      addFaq, updateFaq, deleteFaq,
-      addInquiry, updateInquiryStatus,
-      toggleWishlist, addToRecentlyViewed, updateContactInfo,
-      getProductBySlug, getProductById, getProductsByCategory,
-      getFeaturedProducts, getBestSellers, getNewArrivals, searchProducts,
+      products, 
+      testimonials, 
+      faqs, 
+      inquiries, 
+      wishlist, 
+      recentlyViewed, 
+      contactInfo,
+      loading,
+      addProduct, 
+      updateProduct, 
+      deleteProduct,
+      addTestimonial, 
+      updateTestimonial, 
+      deleteTestimonial,
+      addFaq, 
+      updateFaq, 
+      deleteFaq,
+      addInquiry, 
+      updateInquiryStatus,
+      toggleWishlist, 
+      addToRecentlyViewed, 
+      updateContactInfo,
+      getProductBySlug, 
+      getProductById, 
+      getProductsByCategory,
+      getFeaturedProducts, 
+      getBestSellers, 
+      getNewArrivals, 
+      searchProducts,
     }}>
       {children}
     </StoreContext.Provider>

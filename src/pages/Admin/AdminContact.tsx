@@ -6,10 +6,18 @@ import toast from 'react-hot-toast';
 export default function AdminContact() {
   const { contactInfo, updateContactInfo } = useStore();
   const [form, setForm] = useState({ ...contactInfo });
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
-    updateContactInfo(form);
-    toast.success('Contact settings saved!');
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateContactInfo(form);
+      toast.success('Contact settings saved!');
+    } catch (error) {
+      console.error('Error saving contact info:', error);
+      toast.error('Failed to save contact settings.');
+    }
+    setSaving(false);
   };
 
   return (
@@ -76,14 +84,32 @@ export default function AdminContact() {
             {(['facebook', 'instagram', 'pinterest', 'youtube'] as const).map(key => (
               <div key={key}>
                 <label className="block text-sm font-medium text-stone-700 mb-1 capitalize">{key}</label>
-                <input type="url" value={form.socialMedia?.[key] || ''} onChange={e => setForm({...form, socialMedia: {...(form.socialMedia || {facebook:'',instagram:'',pinterest:'',youtube:''}), [key]: e.target.value}})} className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm" />
+                <input 
+                  type="url" 
+                  value={form.socialMedia?.[key] || ''} 
+                  onChange={e => setForm({
+                    ...form, 
+                    socialMedia: {
+                      facebook: form.socialMedia?.facebook || '',
+                      instagram: form.socialMedia?.instagram || '',
+                      pinterest: form.socialMedia?.pinterest || '',
+                      youtube: form.socialMedia?.youtube || '',
+                      [key]: e.target.value
+                    }
+                  })} 
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm" 
+                />
               </div>
             ))}
           </div>
         </div>
 
-        <button onClick={handleSave} className="flex items-center gap-2 px-6 py-2.5 bg-gold-700 text-white rounded-lg hover:bg-gold-800 transition-colors text-sm font-medium">
-          <Save className="w-4 h-4" /> Save Settings
+        <button 
+          onClick={handleSave} 
+          disabled={saving}
+          className="flex items-center gap-2 px-6 py-2.5 bg-gold-700 text-white rounded-lg hover:bg-gold-800 transition-colors text-sm font-medium disabled:opacity-50"
+        >
+          <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Settings'}
         </button>
       </div>
     </div>

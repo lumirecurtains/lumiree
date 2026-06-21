@@ -7,20 +7,29 @@ export default function Contact() {
   const { contactInfo, addInquiry } = useStore();
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInquiry({
-      id: `inq-${Date.now()}`,
-      type: 'general',
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      message: `${form.subject}: ${form.message}`,
-      status: 'new',
-      createdAt: new Date().toISOString(),
-    });
-    toast.success('Message sent! We\'ll get back to you shortly.');
-    setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+    setSubmitting(true);
+    try {
+      await addInquiry({
+        id: `inq-${Date.now()}`,
+        type: 'general',
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: `${form.subject}: ${form.message}`,
+        status: 'new',
+        createdAt: new Date().toISOString(),
+      });
+      toast.success('Message sent! We\'ll get back to you shortly.');
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting inquiry:', error);
+      toast.error('Failed to send message. Please try again.');
+    }
+    setSubmitting(false);
   };
 
   return (

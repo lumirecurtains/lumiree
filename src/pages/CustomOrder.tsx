@@ -13,20 +13,29 @@ export default function CustomOrder() {
     quantity: '1', notes: '', room: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInquiry({
-      id: `inq-${Date.now()}`,
-      type: 'quote',
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      message: `Custom Order: ${form.width}×${form.height}, ${form.fabric}, ${form.style}, ${form.rodType}, ${form.pleatStyle}, ${form.layers} layer, Qty: ${form.quantity}, Room: ${form.room}. Notes: ${form.notes}`,
-      status: 'new',
-      createdAt: new Date().toISOString(),
-    });
-    toast.success('Custom order request submitted! We\'ll contact you within 24 hours.');
-    setForm({ name: '', email: '', phone: '', width: '', height: '', fabric: '', style: '', rodType: '', layers: 'Single', pleatStyle: '', quantity: '1', notes: '', room: '' });
+    setSubmitting(true);
+    try {
+      await addInquiry({
+        id: `inq-${Date.now()}`,
+        type: 'quote',
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: `Custom Order: ${form.width}×${form.height}, ${form.fabric}, ${form.style}, ${form.rodType}, ${form.pleatStyle}, ${form.layers} layer, Qty: ${form.quantity}, Room: ${form.room}. Notes: ${form.notes}`,
+        status: 'new',
+        createdAt: new Date().toISOString(),
+      });
+      toast.success('Custom order request submitted! We\'ll contact you within 24 hours.');
+      setForm({ name: '', email: '', phone: '', width: '', height: '', fabric: '', style: '', rodType: '', layers: 'Single', pleatStyle: '', quantity: '1', notes: '', room: '' });
+    } catch (error) {
+      console.error('Error submitting order:', error);
+      toast.error('Failed to submit. Please try again.');
+    }
+    setSubmitting(false);
   };
 
   return (

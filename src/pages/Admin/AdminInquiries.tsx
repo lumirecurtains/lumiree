@@ -5,9 +5,14 @@ import toast from 'react-hot-toast';
 export default function AdminInquiries() {
   const { inquiries, updateInquiryStatus } = useStore();
 
-  const handleStatusChange = (id: string, status: any) => {
-    updateInquiryStatus(id, status);
-    toast.success(`Status updated to ${status}`);
+  const handleStatusChange = async (id: string, status: any) => {
+    try {
+      await updateInquiryStatus(id, status);
+      toast.success(`Status updated to ${status}`);
+    } catch (error) {
+      console.error('Error updating inquiry:', error);
+      toast.error('Failed to update status.');
+    }
   };
 
   const statusColors: Record<string, string> = {
