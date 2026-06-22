@@ -20,4 +20,4 @@ Disallow: /login
 Disallow: /wishlist
 
 # Sitemap
-Sitemap: https://luxdrape.com/sitemap.xml
+Sitemap: https://lumiree.vercel.app/sitemap.xml

@@ -66,7 +66,7 @@ export default function ProductDetail() {
           "material": product.material,
           "offers": {
             "@type": "Offer",
-            "url": `https://luxdrape.com/product/${product.slug}`,
+            "url": `https://lumiree.vercel.app/product/${product.slug}`,
             "priceCurrency": "INR",
             "price": product.salePrice || product.price,
             "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -77,9 +77,9 @@ export default function ProductDetail() {
         {
           "@type": "BreadcrumbList",
           "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://luxdrape.com/" },
-            { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://luxdrape.com/shop" },
-            { "@type": "ListItem", "position": 3, "name": product.category.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase()), "item": `https://luxdrape.com/shop?category=${product.category}` },
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://lumiree.vercel.app/" },
+            { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://lumiree.vercel.app/shop" },
+            { "@type": "ListItem", "position": 3, "name": product.category.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase()), "item": `https://lumiree.vercel.app/shop?category=${product.category}` },
             { "@type": "ListItem", "position": 4, "name": product.name },
           ]
         }

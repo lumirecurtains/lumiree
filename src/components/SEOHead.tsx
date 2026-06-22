@@ -10,7 +10,7 @@ interface SEOProps {
   jsonLd?: object;
 }
 
-const BASE_URL = 'https://luxdrape.com';
+const BASE_URL = 'https://lumiree.vercel.app';
 const DEFAULT_IMAGE = 'https://images.pexels.com/photos/33839793/pexels-photo-33839793.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200';
 
 export default function SEOHead({ title, description, canonical, ogImage, type = 'website', noindex = false, jsonLd }: SEOProps) {
