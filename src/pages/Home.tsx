@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star, Truck, Shield, Award, Ruler, Phone, ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import ProductCard from '@/components/ProductCard';
+import SEOHead from '@/components/SEOHead';
 import { STOCK_IMAGES, CATEGORIES } from '@/lib/constants';
 import { formatINR } from '@/utils/currency';
 
@@ -11,22 +12,22 @@ function HeroSection() {
   const slides = [
     {
       image: STOCK_IMAGES.hero,
-      title: 'Luxury Curtains for\nDistinguished Spaces',
-      subtitle: 'Discover our handcrafted collection of premium window treatments',
+      title: 'Premium Curtains\nin Begusarai',
+      subtitle: 'Bihar\'s finest luxury curtain store — handcrafted window treatments delivered to your door',
       cta: 'Explore Collection',
       link: '/shop',
     },
     {
       image: STOCK_IMAGES.hero2,
       title: 'Transform Your\nBedroom Sanctuary',
-      subtitle: 'Premium blackout & sheer curtains for the perfect ambiance',
+      subtitle: 'Premium blackout & sheer curtains for the perfect ambiance — serving all of Bihar',
       cta: 'Shop Bedroom',
       link: '/shop?category=bedroom',
     },
     {
       image: STOCK_IMAGES.hero3,
       title: 'Custom Tailored\nTo Perfection',
-      subtitle: 'Made-to-measure curtains crafted by expert artisans',
+      subtitle: 'Made-to-measure curtains crafted by expert artisans in Begusarai',
       cta: 'Order Custom',
       link: '/custom-order',
     },
@@ -44,7 +45,7 @@ function HeroSection() {
           key={i}
           className={`absolute inset-0 transition-opacity duration-1000 ${i === current ? 'opacity-100' : 'opacity-0'}`}
         >
-          <img src={slide.image} alt="Luxury curtain display" className="w-full h-full object-cover" />
+          <img src={slide.image} alt="Luxury curtains showroom in Begusarai Bihar" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
         </div>
       ))}
@@ -164,7 +165,7 @@ function CategoriesSection() {
             >
               <img
                 src={categoryImages[cat.id] || STOCK_IMAGES.hero}
-                alt={`${cat.name} collection`}
+                alt={`${cat.name} collection available in Begusarai Bihar — LuxDrape`}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
               />
@@ -324,11 +325,11 @@ function BeforeAfter() {
             <div key={i} className="rounded-xl overflow-hidden shadow-lg">
               <div className="grid grid-cols-2">
                 <div className="relative">
-                  <img src={item.before} alt="Before curtain installation" className="w-full h-48 md:h-64 object-cover" loading="lazy" />
+                  <img src={item.before} alt="Room before LuxDrape curtain installation in Bihar" className="w-full h-48 md:h-64 object-cover" loading="lazy" />
                   <span className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">Before</span>
                 </div>
                 <div className="relative">
-                  <img src={item.after} alt="After curtain installation" className="w-full h-48 md:h-64 object-cover" loading="lazy" />
+                  <img src={item.after} alt="Room after LuxDrape curtain installation in Begusarai" className="w-full h-48 md:h-64 object-cover" loading="lazy" />
                   <span className="absolute bottom-2 left-2 bg-gold-600 text-white text-xs px-2 py-1 rounded">After</span>
                 </div>
               </div>
@@ -350,11 +351,11 @@ function InstallationShowcase() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="text-gold-600 text-sm tracking-[0.3em] uppercase mb-2">Professional Service</p>
+            <p className="text-gold-600 text-sm tracking-[0.3em] uppercase mb-2">Serving Begusarai & All Bihar</p>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-stone-900 mb-4">Expert Curtain Installation</h2>
             <p className="text-stone-600 leading-relaxed mb-6">
-              Our team of professional installers ensures your curtains are hung perfectly. From measuring to final styling, 
-              we handle every detail so you can enjoy beautiful windows without the hassle.
+              Our Begusarai-based team of professional installers ensures your curtains are hung perfectly. 
+              We serve homes, offices, and hotels across Begusarai, Patna, Muzaffarpur, Darbhanga, Bhagalpur, Gaya, and all of Bihar.
             </p>
             <ul className="space-y-3 mb-8">
               {['Free professional measurement', 'Expert rod & track installation', 'Perfect curtain hanging & styling', 'Clean-up & old curtain removal'].map((item, i) => (
@@ -369,7 +370,7 @@ function InstallationShowcase() {
             </Link>
           </div>
           <div className="relative">
-            <img src={STOCK_IMAGES.elegant} alt="Professional curtain installation" className="rounded-xl shadow-xl w-full" loading="lazy" />
+            <img src={STOCK_IMAGES.elegant} alt="Professional curtain installation service in Begusarai Bihar" className="rounded-xl shadow-xl w-full" loading="lazy" />
             <div className="absolute -bottom-4 -left-4 bg-white p-4 rounded-xl shadow-lg">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gold-100 rounded-full flex items-center justify-center">
@@ -459,9 +460,43 @@ function WhatsAppCTA() {
   );
 }
 
+function LocalSEOSection() {
+  return (
+    <section className="py-16 md:py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto text-center mb-10">
+          <p className="text-gold-600 text-sm tracking-[0.3em] uppercase mb-2">Begusarai's Trusted Curtain Store</p>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-stone-900 mb-4">Premium Curtains & Window Treatments in Bihar</h2>
+          <p className="text-stone-600 leading-relaxed">
+            LuxDrape is Begusarai's leading destination for luxury curtains and custom window treatments. Whether you're furnishing a new home 
+            in Begusarai, redesigning your living room in Patna, or outfitting a hotel in Muzaffarpur — we deliver premium curtains across all of Bihar.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            { title: 'Custom Curtains in Begusarai', text: 'Made-to-measure curtains tailored to your exact window dimensions. Choose from 200+ premium fabrics at our Begusarai showroom.' },
+            { title: 'Luxury Window Treatments for Bihar', text: 'From blackout curtains in Patna to sheer drapes in Darbhanga — we deliver luxury window treatments across Bihar with professional installation.' },
+            { title: 'Home & Hotel Curtain Solutions', text: 'Serving residential homes, offices, and hotels in Begusarai, Bhagalpur, Gaya, and beyond with premium curtain fitting and styling.' },
+          ].map((item, i) => (
+            <div key={i} className="bg-stone-50 rounded-xl p-6">
+              <h3 className="font-heading text-lg font-semibold text-stone-900 mb-2">{item.title}</h3>
+              <p className="text-sm text-stone-600 leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   return (
     <div>
+      <SEOHead
+        title="LuxDrape — Premium Luxury Curtains in Begusarai, Bihar | Custom Window Treatments"
+        description="Begusarai's premier luxury curtain store. Shop blackout, sheer, velvet & custom curtains. Professional installation across Bihar. Free shipping over ₹5,000. Serving Patna, Muzaffarpur, Darbhanga & all Bihar."
+        canonical="/"
+      />
       <HeroSection />
       <TrustBadges />
       <CategoriesSection />
@@ -472,6 +507,7 @@ export default function Home() {
       <Testimonials />
       <InstallationShowcase />
       <FAQPreview />
+      <LocalSEOSection />
       <WhatsAppCTA />
     </div>
   );

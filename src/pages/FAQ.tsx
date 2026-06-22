@@ -1,13 +1,25 @@
 import { useState } from 'react';
 import { ChevronDown, MessageCircle } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
+import SEOHead from '@/components/SEOHead';
 
 export default function FAQ() {
   const { faqs, contactInfo } = useStore();
   const [openId, setOpenId] = useState<string | null>(null);
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(f => ({
+      "@type": "Question",
+      "name": f.question,
+      "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+    }))
+  };
+
   return (
     <div>
+      <SEOHead title="FAQ — Curtain Questions Answered | LuxDrape Begusarai" description="Find answers about curtain types, custom orders, measurements, installation, delivery, pricing, care & returns. LuxDrape — Begusarai's curtain experts." canonical="/faq" jsonLd={faqSchema} />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Help Center</p>

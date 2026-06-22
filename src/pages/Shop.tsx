@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal, X, Search, Grid3X3, LayoutList } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import ProductCard from '@/components/ProductCard';
+import SEOHead from '@/components/SEOHead';
 import { CATEGORIES, MATERIALS, COLORS } from '@/lib/constants';
 import { formatINR } from '@/utils/currency';
 
@@ -15,7 +16,7 @@ export default function Shop() {
   const [selectedMaterial, setSelectedMaterial] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [sortBy, setSortBy] = useState('featured');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [gridView, setGridView] = useState(true);
 
   const filtered = useMemo(() => {
@@ -62,14 +63,21 @@ export default function Shop() {
     setSelectedCategory('');
     setSelectedMaterial('');
     setSelectedColor('');
-    setPriceRange([0, 500]);
+    setPriceRange([0, 100000]);
     setSortBy('featured');
   };
 
   const activeFilters = [selectedCategory, selectedMaterial, selectedColor].filter(Boolean).length + (searchQuery ? 1 : 0);
 
+  const catName = selectedCategory ? CATEGORIES.find(c => c.id === selectedCategory)?.name || 'Curtains' : 'All Curtains';
+
   return (
     <div className="bg-stone-50 min-h-screen">
+      <SEOHead
+        title={`Shop ${catName} Online in Begusarai, Bihar | LuxDrape`}
+        description={`Browse premium ${catName.toLowerCase()} at LuxDrape. Blackout, sheer, velvet & custom options. Serving Begusarai, Patna & all Bihar. Free shipping over ₹5,000.`}
+        canonical={`/shop${selectedCategory ? `?category=${selectedCategory}` : ''}`}
+      />
       {/* Header */}
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4">

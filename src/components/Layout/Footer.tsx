@@ -42,7 +42,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-sm text-stone-400 leading-relaxed mb-4">
-              Transforming spaces with premium luxury curtains since 2010. We craft exquisite window treatments that blend elegance with functionality.
+              Begusarai's premier luxury curtain store. Transforming homes, offices, and hotels across Bihar with 
+              handcrafted window treatments since 2010.
             </p>
             <div className="flex gap-3">
               <a href={contactInfo.socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-stone-800 rounded-full flex items-center justify-center hover:bg-gold-700 transition-colors text-xs font-bold">
@@ -141,7 +142,7 @@ export default function Footer() {
       {/* Bottom */}
       <div className="border-t border-stone-800">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-stone-500">&copy; {new Date().getFullYear()} LuxDrape. All rights reserved. Premium Luxury Curtains & Window Treatments.</p>
+          <p className="text-xs text-stone-500">&copy; {new Date().getFullYear()} LuxDrape, Begusarai, Bihar. Premium Luxury Curtains & Window Treatments.</p>
           <div className="flex items-center gap-4 text-xs text-stone-500">
             <Link to="/privacy" className="hover:text-gold-400 transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-gold-400 transition-colors">Terms & Conditions</Link>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import SEOHead from '@/components/SEOHead';
 import toast from 'react-hot-toast';
 
 export default function Login() {
@@ -49,6 +50,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center py-16 px-4">
+      <SEOHead title="Sign In | LuxDrape" description="Sign in to your LuxDrape account." canonical="/login" noindex />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">

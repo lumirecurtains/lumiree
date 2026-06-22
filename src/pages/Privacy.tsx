@@ -1,6 +1,9 @@
+import SEOHead from '@/components/SEOHead';
+
 export default function Privacy() {
   return (
     <div>
+      <SEOHead title="Privacy Policy | LuxDrape" description="LuxDrape privacy policy. Learn how we collect, use, and protect your personal information when shopping for curtains." canonical="/privacy" noindex />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-12">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-white">Privacy Policy</h1>

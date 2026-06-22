@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Send, Ruler, Palette, Layers } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
-import { MATERIALS, CURTAIN_STYLES, ROD_TYPES, PLEAT_STYLES, COLORS } from '@/lib/constants';
-import { STOCK_IMAGES } from '@/lib/constants';
+import { MATERIALS, CURTAIN_STYLES, ROD_TYPES, PLEAT_STYLES, COLORS, STOCK_IMAGES } from '@/lib/constants';
+import SEOHead from '@/components/SEOHead';
 import toast from 'react-hot-toast';
 
 export default function CustomOrder() {
@@ -40,9 +40,10 @@ export default function CustomOrder() {
 
   return (
     <div>
+      <SEOHead title="Custom Curtains — Made to Measure in Begusarai, Bihar | LuxDrape" description="Order custom curtains tailored to your windows. Choose from 200+ fabrics, styles & pleat types. Professional measurement & installation in Begusarai & Bihar." canonical="/custom-order" />
       {/* Hero */}
       <div className="relative h-[40vh] overflow-hidden">
-        <img src={STOCK_IMAGES.fabric} alt="Custom curtain fabrics" className="w-full h-full object-cover" />
+        <img src={STOCK_IMAGES.fabric} alt="Custom curtain fabrics in Begusarai Bihar" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex items-center justify-center text-center">
           <div>

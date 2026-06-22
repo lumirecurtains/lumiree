@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import ProductCard from '@/components/ProductCard';
+import SEOHead from '@/components/SEOHead';
 
 export default function Wishlist() {
   const { wishlist, products } = useStore();
@@ -9,6 +10,7 @@ export default function Wishlist() {
 
   return (
     <div>
+      <SEOHead title="My Wishlist | LuxDrape" description="Your saved curtain favourites from LuxDrape." canonical="/wishlist" noindex />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-white">My Wishlist</h1>

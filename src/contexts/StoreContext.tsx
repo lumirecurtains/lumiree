@@ -88,7 +88,7 @@ const defaultContactInfo: ContactInfo = {
   email: BUSINESS_EMAIL,
   address: BUSINESS_ADDRESS,
   businessHours: 'Mon-Sat: 9:00 AM - 7:00 PM | Sun: 10:00 AM - 5:00 PM',
-  mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2!2d-73.987!3d40.757!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQ1JzI1LjIiTiA3M8KwNTknMTMuMiJX!5e0!3m2!1sen!2sus!4v1234567890',
+  mapUrl: 'https://www.google.com/maps?q=Begusarai+Bihar+India',
   socialMedia: {
     facebook: 'https://facebook.com/luxdrape',
     instagram: 'https://instagram.com/luxdrape',

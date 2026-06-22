@@ -3,9 +3,13 @@ export const SUPER_ADMIN_EMAIL = 'lexcorp0777@gmail.com';
 export const WHATSAPP_NUMBER = '+1234567890';
 export const PHONE_NUMBER = '+1234567890';
 export const BUSINESS_EMAIL = 'info@luxdrape.com';
-export const BUSINESS_ADDRESS = '123 Luxury Avenue, Fashion District, New York, NY 10018';
+export const BUSINESS_ADDRESS = 'Main Road, Begusarai, Bihar 851101, India';
 export const BUSINESS_NAME = 'LuxDrape';
 export const BUSINESS_TAGLINE = 'Premium Luxury Curtains & Window Treatments';
+export const BUSINESS_CITY = 'Begusarai';
+export const BUSINESS_STATE = 'Bihar';
+export const BUSINESS_COUNTRY = 'India';
+export const BASE_URL = 'https://luxdrape.com';
 
 export const CATEGORIES = [
   { id: 'blackout', name: 'Blackout Curtains', description: 'Complete light blocking for perfect sleep' },

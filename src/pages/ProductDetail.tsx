@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Heart, Star, Share2, Truck, Shield, RotateCcw, ChevronRight, ZoomIn, X, Minus, Plus } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import ProductCard from '@/components/ProductCard';
+import SEOHead from '@/components/SEOHead';
 import { formatINR } from '@/utils/currency';
 
 export default function ProductDetail() {
@@ -51,8 +52,59 @@ export default function ProductDetail() {
 
   const whatsappMsg = `Hi! I'm interested in "${product.name}" (${selectedColor}, ${selectedSize}). Price: ${formatINR(product.salePrice || product.price)}. Can you help me?`;
 
+  const productSchema = useMemo(() => {
+    const schema: any = {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Product",
+          "name": product.name,
+          "description": product.shortDescription,
+          "image": product.images,
+          "brand": { "@type": "Brand", "name": "LuxDrape" },
+          "category": product.category.replace('-', ' '),
+          "material": product.material,
+          "offers": {
+            "@type": "Offer",
+            "url": `https://luxdrape.com/product/${product.slug}`,
+            "priceCurrency": "INR",
+            "price": product.salePrice || product.price,
+            "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "seller": { "@type": "Organization", "name": "LuxDrape" },
+            "areaServed": { "@type": "State", "name": "Bihar" }
+          },
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://luxdrape.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://luxdrape.com/shop" },
+            { "@type": "ListItem", "position": 3, "name": product.category.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase()), "item": `https://luxdrape.com/shop?category=${product.category}` },
+            { "@type": "ListItem", "position": 4, "name": product.name },
+          ]
+        }
+      ]
+    };
+    if (product.reviewCount > 0) {
+      schema["@graph"][0].aggregateRating = {
+        "@type": "AggregateRating",
+        "ratingValue": product.rating.toString(),
+        "reviewCount": product.reviewCount.toString()
+      };
+    }
+    return schema;
+  }, [product]);
+
   return (
     <div className="bg-stone-50">
+      <SEOHead
+        title={`${product.name} | Buy Online in Begusarai, Bihar | LuxDrape`}
+        description={`${product.shortDescription} Available in ${product.colors.join(', ')}. ${product.material} fabric. Buy online with free shipping across Bihar.`}
+        canonical={`/product/${product.slug}`}
+        ogImage={product.images[0]}
+        type="product"
+        jsonLd={productSchema}
+      />
       {/* Breadcrumb */}
       <div className="bg-white border-b border-stone-100">
         <div className="max-w-7xl mx-auto px-4 py-3">
@@ -200,7 +252,7 @@ export default function ProductDetail() {
               <div className="text-center">
                 <Truck className="w-5 h-5 mx-auto text-gold-700 mb-1" />
                 <p className="text-xs font-medium text-stone-900">Free Shipping</p>
-                <p className="text-[10px] text-stone-500">Orders $200+</p>
+                <p className="text-[10px] text-stone-500">Orders ₹5,000+</p>
               </div>
               <div className="text-center">
                 <Shield className="w-5 h-5 mx-auto text-gold-700 mb-1" />

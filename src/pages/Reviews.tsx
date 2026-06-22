@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Star, Send, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
+import SEOHead from '@/components/SEOHead';
 import toast from 'react-hot-toast';
 
 function StarRatingInput({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -72,35 +73,37 @@ export default function Reviews() {
     return { star, count: c, pct: count > 0 ? Math.round((c / count) * 100) : 0 };
   });
 
+  const reviewSchema = count > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "LuxDrape",
+    "description": "Premium Luxury Curtains & Window Treatments in Begusarai, Bihar",
+    "address": { "@type": "PostalAddress", "addressLocality": "Begusarai", "addressRegion": "Bihar", "addressCountry": "IN" },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": avg.toString(),
+      "reviewCount": count.toString(),
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "review": approved.slice(0, 10).map(r => ({
+      "@type": "Review",
+      "author": { "@type": "Person", "name": r.userName },
+      "datePublished": r.createdAt.split('T')[0],
+      "reviewRating": { "@type": "Rating", "ratingValue": r.rating.toString(), "bestRating": "5" },
+      "name": r.title || 'Customer Review',
+      "reviewBody": r.text,
+    })),
+  } : undefined;
+
   return (
     <div>
-      {/* SEO structured data */}
-      {count > 0 && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": "LuxDrape",
-            "description": "Premium Luxury Curtains & Window Treatments",
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": avg.toString(),
-              "reviewCount": count.toString(),
-              "bestRating": "5",
-              "worstRating": "1"
-            },
-            "review": approved.slice(0, 10).map(r => ({
-              "@type": "Review",
-              "author": { "@type": "Person", "name": r.userName },
-              "datePublished": r.createdAt.split('T')[0],
-              "reviewRating": { "@type": "Rating", "ratingValue": r.rating.toString(), "bestRating": "5" },
-              "name": r.title || 'Customer Review',
-              "reviewBody": r.text,
-            })),
-          }) }}
-        />
-      )}
+      <SEOHead
+        title={`Customer Reviews${count > 0 ? ` — ${avg}★ Rating` : ''} | LuxDrape Begusarai`}
+        description={`Read ${count > 0 ? count : ''} genuine customer reviews of LuxDrape curtains. ${count > 0 ? `Rated ${avg}/5 stars.` : ''} Premium curtain store in Begusarai, Bihar.`}
+        canonical="/reviews"
+        jsonLd={reviewSchema}
+      />
 
       {/* Hero */}
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-16">

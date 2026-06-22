@@ -1,29 +1,30 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { STOCK_IMAGES } from '@/lib/constants';
+import SEOHead from '@/components/SEOHead';
 
 export default function Gallery() {
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   const images = [
-    { src: STOCK_IMAGES.hero, alt: 'Elegant traditional curtains in sunlit room', category: 'Living Room' },
-    { src: STOCK_IMAGES.bedroom, alt: 'Modern bedroom with sheer curtains', category: 'Bedroom' },
-    { src: STOCK_IMAGES.blackout, alt: 'Premium blackout velvet curtain', category: 'Blackout' },
-    { src: STOCK_IMAGES.luxury, alt: 'Luxury green and brown curtains', category: 'Luxury' },
-    { src: STOCK_IMAGES.sheer, alt: 'White sheer curtains with natural light', category: 'Sheer' },
-    { src: STOCK_IMAGES.livingRoom, alt: 'Dining room with beige curtains', category: 'Living Room' },
-    { src: STOCK_IMAGES.modern, alt: 'Modern bedroom with curtains', category: 'Modern' },
-    { src: STOCK_IMAGES.drapes, alt: 'Gold and blue decorative drapes', category: 'Luxury' },
-    { src: STOCK_IMAGES.elegant, alt: 'Elegant interior with drapery', category: 'Custom' },
-    { src: STOCK_IMAGES.velvet, alt: 'Soft pink velvet fabric close-up', category: 'Fabrics' },
-    { src: STOCK_IMAGES.gold, alt: 'Golden hanging curtain', category: 'Luxury' },
-    { src: STOCK_IMAGES.minimal, alt: 'Minimalist bedroom curtains', category: 'Minimal' },
-    { src: STOCK_IMAGES.green, alt: 'Bedroom with green curtains', category: 'Bedroom' },
-    { src: STOCK_IMAGES.hotel, alt: 'Hotel style living room', category: 'Hotel' },
-    { src: STOCK_IMAGES.white, alt: 'White bedroom with large windows', category: 'Sheer' },
-    { src: STOCK_IMAGES.dark, alt: 'Elegant dark curtain fabric', category: 'Blackout' },
-    { src: STOCK_IMAGES.office, alt: 'Modern bedroom with scenic view', category: 'Office' },
-    { src: STOCK_IMAGES.vintage, alt: 'Vintage curtain room setting', category: 'Custom' },
+    { src: STOCK_IMAGES.hero, alt: 'Elegant traditional curtains in sunlit living room — LuxDrape Begusarai', category: 'Living Room' },
+    { src: STOCK_IMAGES.bedroom, alt: 'Modern bedroom with sheer curtains installed in Bihar', category: 'Bedroom' },
+    { src: STOCK_IMAGES.blackout, alt: 'Premium blackout velvet curtain — LuxDrape collection', category: 'Blackout' },
+    { src: STOCK_IMAGES.luxury, alt: 'Luxury green curtains for living room in Begusarai', category: 'Luxury' },
+    { src: STOCK_IMAGES.sheer, alt: 'White sheer curtains filtering natural light — Bihar homes', category: 'Sheer' },
+    { src: STOCK_IMAGES.livingRoom, alt: 'Dining room beige curtains by LuxDrape', category: 'Living Room' },
+    { src: STOCK_IMAGES.modern, alt: 'Modern bedroom curtains available in Begusarai', category: 'Modern' },
+    { src: STOCK_IMAGES.drapes, alt: 'Gold and blue decorative luxury drapes', category: 'Luxury' },
+    { src: STOCK_IMAGES.elegant, alt: 'Custom drapery installation by LuxDrape Bihar', category: 'Custom' },
+    { src: STOCK_IMAGES.velvet, alt: 'Soft pink velvet curtain fabric close-up', category: 'Fabrics' },
+    { src: STOCK_IMAGES.gold, alt: 'Golden hanging curtain for luxury interiors', category: 'Luxury' },
+    { src: STOCK_IMAGES.minimal, alt: 'Minimalist bedroom curtains from LuxDrape', category: 'Minimal' },
+    { src: STOCK_IMAGES.green, alt: 'Bedroom with green curtains — Begusarai home', category: 'Bedroom' },
+    { src: STOCK_IMAGES.hotel, alt: 'Hotel curtain installation in Bihar', category: 'Hotel' },
+    { src: STOCK_IMAGES.white, alt: 'White sheer curtains for bright bedrooms', category: 'Sheer' },
+    { src: STOCK_IMAGES.dark, alt: 'Dark blackout curtain fabric by LuxDrape', category: 'Blackout' },
+    { src: STOCK_IMAGES.office, alt: 'Office curtain panels for professional spaces in Bihar', category: 'Office' },
+    { src: STOCK_IMAGES.vintage, alt: 'Custom vintage curtain design — LuxDrape Begusarai', category: 'Custom' },
   ];
 
   const [filter, setFilter] = useState('All');
@@ -32,6 +33,7 @@ export default function Gallery() {
 
   return (
     <div>
+      <SEOHead title="Curtain Gallery — Installation Photos | LuxDrape Begusarai" description="Browse stunning curtain installation photos from LuxDrape. Get inspired by luxury, sheer, blackout & custom curtain designs for homes and hotels in Bihar." canonical="/gallery" />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Inspiration</p>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
+import SEOHead from '@/components/SEOHead';
 import toast from 'react-hot-toast';
 import { formatINR } from '@/utils/currency';
 
@@ -30,6 +31,7 @@ export default function QuoteRequest() {
 
   return (
     <div>
+      <SEOHead title="Get a Free Curtain Quote | LuxDrape Begusarai, Bihar" description="Request a free personalized curtain quote from LuxDrape. Custom sizing, fabric selection, and professional installation across Begusarai & Bihar." canonical="/quote-request" />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Free Quote</p>
