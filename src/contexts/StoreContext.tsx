@@ -14,7 +14,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Product, Testimonial, FAQ, Inquiry, ContactInfo } from '@/lib/types';
+import { Product, Testimonial, FAQ, Inquiry, ContactInfo, Review } from '@/lib/types';
 import { SAMPLE_PRODUCTS, SAMPLE_TESTIMONIALS, SAMPLE_FAQS, WHATSAPP_NUMBER, PHONE_NUMBER, BUSINESS_EMAIL, BUSINESS_ADDRESS } from '@/lib/constants';
 
 interface StoreContextType {
@@ -22,6 +22,7 @@ interface StoreContextType {
   testimonials: Testimonial[];
   faqs: FAQ[];
   inquiries: Inquiry[];
+  reviews: Review[];
   wishlist: string[];
   recentlyViewed: string[];
   contactInfo: ContactInfo;
@@ -37,6 +38,12 @@ interface StoreContextType {
   deleteFaq: (id: string) => Promise<void>;
   addInquiry: (i: Inquiry) => Promise<void>;
   updateInquiryStatus: (id: string, status: Inquiry['status']) => Promise<void>;
+  addReview: (r: Review) => Promise<void>;
+  updateReview: (id: string, updates: Partial<Review>) => Promise<void>;
+  deleteReview: (id: string) => Promise<void>;
+  getApprovedReviews: () => Review[];
+  getReviewsByProduct: (productId: string) => Review[];
+  getAverageRating: () => { avg: number; count: number };
   toggleWishlist: (productId: string) => void;
   addToRecentlyViewed: (productId: string) => void;
   updateContactInfo: (info: Partial<ContactInfo>) => Promise<void>;
@@ -96,6 +103,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [contactInfo, setContactInfo] = useState<ContactInfo>(defaultContactInfo);
   const [loading, setLoading] = useState(true);
   
@@ -224,6 +232,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }
     );
 
+    // Reviews listener
+    const reviewsUnsubscribe = onSnapshot(
+      collection(db, 'reviews'),
+      (snapshot) => {
+        const reviewsData: Review[] = [];
+        snapshot.forEach((doc) => {
+          reviewsData.push({ id: doc.id, ...doc.data() } as Review);
+        });
+        reviewsData.sort((a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        console.log(`📝 Reviews loaded from Firestore: ${reviewsData.length}`);
+        setReviews(reviewsData);
+      },
+      (error) => {
+        console.error('❌ Reviews listener error:', error);
+        setReviews([]);
+      }
+    );
+
     // Cleanup listeners on unmount
     return () => {
       console.log('🔥 Cleaning up Firestore listeners...');
@@ -232,6 +260,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       faqsUnsubscribe();
       inquiriesUnsubscribe();
       contactInfoUnsubscribe();
+      reviewsUnsubscribe();
     };
   }, []);
 
@@ -412,6 +441,83 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // ============================================
+  // REVIEW OPERATIONS
+  // ============================================
+
+  const addReview = useCallback(async (review: Review) => {
+    try {
+      console.log('📝 Adding review to Firestore:', review.userName);
+      
+      // Build a clean document — Firestore rejects undefined values
+      const reviewDoc: Record<string, any> = {
+        userName: review.userName,
+        userEmail: review.userEmail || '',
+        rating: review.rating,
+        title: review.title || '',
+        text: review.text,
+        productId: review.productId || '',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+      
+      // Only include productName if it actually exists
+      if (review.productName) {
+        reviewDoc.productName = review.productName;
+      }
+
+      console.log('📝 Review document to write:', JSON.stringify(reviewDoc));
+      const docRef = await addDoc(collection(db, 'reviews'), reviewDoc);
+      console.log('✅ Review submitted for approval, ID:', docRef.id);
+    } catch (error) {
+      console.error('❌ Error adding review to Firestore:', error);
+      throw error;
+    }
+  }, []);
+
+  const updateReview = useCallback(async (id: string, updates: Partial<Review>) => {
+    try {
+      console.log('📝 Updating review in Firestore:', id);
+      // Sanitize: replace undefined values with empty strings for Firestore
+      const cleanUpdates: Record<string, any> = {};
+      for (const [key, value] of Object.entries(updates)) {
+        cleanUpdates[key] = value === undefined ? '' : value;
+      }
+      const reviewRef = doc(db, 'reviews', id);
+      await updateDoc(reviewRef, cleanUpdates);
+      console.log('✅ Review updated:', id);
+    } catch (error) {
+      console.error('❌ Error updating review:', error);
+      throw error;
+    }
+  }, []);
+
+  const deleteReview = useCallback(async (id: string) => {
+    try {
+      console.log('📝 Deleting review from Firestore:', id);
+      await deleteDoc(doc(db, 'reviews', id));
+      console.log('✅ Review deleted:', id);
+    } catch (error) {
+      console.error('❌ Error deleting review:', error);
+      throw error;
+    }
+  }, []);
+
+  const getApprovedReviews = useCallback(() => {
+    return reviews.filter(r => r.status === 'approved');
+  }, [reviews]);
+
+  const getReviewsByProduct = useCallback((productId: string) => {
+    return reviews.filter(r => r.productId === productId && r.status === 'approved');
+  }, [reviews]);
+
+  const getAverageRating = useCallback(() => {
+    const approved = reviews.filter(r => r.status === 'approved');
+    if (approved.length === 0) return { avg: 0, count: 0 };
+    const total = approved.reduce((sum, r) => sum + r.rating, 0);
+    return { avg: parseFloat((total / approved.length).toFixed(1)), count: approved.length };
+  }, [reviews]);
+
+  // ============================================
   // LOCAL OPERATIONS (Wishlist & Recently Viewed)
   // ============================================
 
@@ -451,35 +557,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider value={{
-      products, 
-      testimonials, 
-      faqs, 
-      inquiries, 
-      wishlist, 
-      recentlyViewed, 
-      contactInfo,
-      loading,
-      addProduct, 
-      updateProduct, 
-      deleteProduct,
-      addTestimonial, 
-      updateTestimonial, 
-      deleteTestimonial,
-      addFaq, 
-      updateFaq, 
-      deleteFaq,
-      addInquiry, 
-      updateInquiryStatus,
-      toggleWishlist, 
-      addToRecentlyViewed, 
-      updateContactInfo,
-      getProductBySlug, 
-      getProductById, 
-      getProductsByCategory,
-      getFeaturedProducts, 
-      getBestSellers, 
-      getNewArrivals, 
-      searchProducts,
+      products, testimonials, faqs, inquiries, reviews,
+      wishlist, recentlyViewed, contactInfo, loading,
+      addProduct, updateProduct, deleteProduct,
+      addTestimonial, updateTestimonial, deleteTestimonial,
+      addFaq, updateFaq, deleteFaq,
+      addInquiry, updateInquiryStatus,
+      addReview, updateReview, deleteReview,
+      getApprovedReviews, getReviewsByProduct, getAverageRating,
+      toggleWishlist, addToRecentlyViewed, updateContactInfo,
+      getProductBySlug, getProductById, getProductsByCategory,
+      getFeaturedProducts, getBestSellers, getNewArrivals, searchProducts,
     }}>
       {children}
     </StoreContext.Provider>

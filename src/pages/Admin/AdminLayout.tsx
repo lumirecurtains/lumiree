@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, Navigate, Outlet } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, MessageSquare, Users, Star, HelpCircle, 
-  Settings, Menu, X, ChevronRight, ShieldCheck, Image, Phone
+  Settings, Menu, X, ChevronRight, ShieldCheck, Image, Phone, MessageSquareText
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -10,6 +10,7 @@ const navItems = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', exact: true },
   { to: '/admin/products', icon: Package, label: 'Products' },
   { to: '/admin/inquiries', icon: MessageSquare, label: 'Inquiries' },
+  { to: '/admin/reviews', icon: MessageSquareText, label: 'Reviews' },
   { to: '/admin/testimonials', icon: Star, label: 'Testimonials' },
   { to: '/admin/faqs', icon: HelpCircle, label: 'FAQs' },
   { to: '/admin/gallery', icon: Image, label: 'Gallery' },

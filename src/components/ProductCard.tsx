@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Heart, Star, Eye } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useStore } from '@/contexts/StoreContext';
+import { formatINR } from '@/utils/currency';
 
 interface Props {
   product: Product;
@@ -83,11 +84,11 @@ export default function ProductCard({ product, className = '' }: Props) {
         <div className="flex items-center gap-2 mt-2">
           {product.salePrice ? (
             <>
-              <span className="text-lg font-bold text-stone-900">${product.salePrice}</span>
-              <span className="text-sm text-stone-400 line-through">${product.price}</span>
+              <span className="text-lg font-bold text-stone-900">{formatINR(product.salePrice)}</span>
+              <span className="text-sm text-stone-400 line-through">{formatINR(product.price)}</span>
             </>
           ) : (
-            <span className="text-lg font-bold text-stone-900">${product.price}</span>
+            <span className="text-lg font-bold text-stone-900">{formatINR(product.price)}</span>
           )}
         </div>
 

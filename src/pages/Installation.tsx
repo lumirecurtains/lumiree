@@ -3,6 +3,7 @@ import { Send, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import { STOCK_IMAGES } from '@/lib/constants';
 import toast from 'react-hot-toast';
+import { formatINR } from '@/utils/currency';
 
 export default function Installation() {
   const { addInquiry, contactInfo } = useStore();
@@ -59,8 +60,8 @@ export default function Installation() {
             <div className="bg-gold-50 p-6 rounded-xl">
               <h3 className="font-heading text-lg font-bold text-stone-900 mb-2">Installation Pricing</h3>
               <ul className="space-y-2 text-sm text-stone-600">
-                <li>• Standard Installation (1-3 windows): Starting from $99</li>
-                <li>• Full Room Installation (4-6 windows): Starting from $249</li>
+                <li>• Standard Installation (1-3 windows): Starting from {formatINR(1500)}</li>
+                <li>• Full Room Installation (4-6 windows): Starting from {formatINR(3500)}</li>
                 <li>• Whole House: Custom quote available</li>
                 <li>• Commercial/Hotel: Special bulk pricing</li>
               </ul>

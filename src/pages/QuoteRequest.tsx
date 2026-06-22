@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import toast from 'react-hot-toast';
+import { formatINR } from '@/utils/currency';
 
 export default function QuoteRequest() {
   const { addInquiry } = useStore();
@@ -71,11 +72,11 @@ export default function QuoteRequest() {
               <label className="block text-sm font-medium text-stone-700 mb-1">Budget Range</label>
               <select value={form.budget} onChange={e => setForm({...form, budget: e.target.value})} className="w-full px-4 py-3 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 bg-white">
                 <option value="">Select budget</option>
-                <option>Under $500</option>
-                <option>$500 - $1,000</option>
-                <option>$1,000 - $3,000</option>
-                <option>$3,000 - $5,000</option>
-                <option>$5,000+</option>
+                <option>Under {formatINR(5000)}</option>
+                <option>{formatINR(5000)} - {formatINR(15000)}</option>
+                <option>{formatINR(15000)} - {formatINR(30000)}</option>
+                <option>{formatINR(30000)} - {formatINR(50000)}</option>
+                <option>{formatINR(50000)}+</option>
                 <option>Need recommendation</option>
               </select>
             </div>

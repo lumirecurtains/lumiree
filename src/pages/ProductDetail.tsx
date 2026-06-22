@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Heart, Star, Share2, Truck, Shield, RotateCcw, ChevronRight, ZoomIn, X, Minus, Plus } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import ProductCard from '@/components/ProductCard';
+import { formatINR } from '@/utils/currency';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -48,7 +49,7 @@ export default function ProductDetail() {
     .filter(Boolean)
     .slice(0, 4) as typeof products;
 
-  const whatsappMsg = `Hi! I'm interested in "${product.name}" (${selectedColor}, ${selectedSize}). Price: $${product.salePrice || product.price}. Can you help me?`;
+  const whatsappMsg = `Hi! I'm interested in "${product.name}" (${selectedColor}, ${selectedSize}). Price: ${formatINR(product.salePrice || product.price)}. Can you help me?`;
 
   return (
     <div className="bg-stone-50">
@@ -115,12 +116,12 @@ export default function ProductDetail() {
             <div className="flex items-center gap-3 mb-6">
               {product.salePrice ? (
                 <>
-                  <span className="text-3xl font-bold text-stone-900">${product.salePrice}</span>
-                  <span className="text-xl text-stone-400 line-through">${product.price}</span>
-                  <span className="text-sm bg-red-100 text-red-600 px-2 py-0.5 rounded font-medium">Save ${product.price - product.salePrice}</span>
+                  <span className="text-3xl font-bold text-stone-900">{formatINR(product.salePrice)}</span>
+                  <span className="text-xl text-stone-400 line-through">{formatINR(product.price)}</span>
+                  <span className="text-sm bg-red-100 text-red-600 px-2 py-0.5 rounded font-medium">Save {formatINR(product.price - product.salePrice)}</span>
                 </>
               ) : (
-                <span className="text-3xl font-bold text-stone-900">${product.price}</span>
+                <span className="text-3xl font-bold text-stone-900">{formatINR(product.price)}</span>
               )}
             </div>
 

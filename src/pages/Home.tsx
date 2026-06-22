@@ -4,6 +4,7 @@ import { Star, Truck, Shield, Award, Ruler, Phone, ChevronRight, ChevronLeft, Ar
 import { useStore } from '@/contexts/StoreContext';
 import ProductCard from '@/components/ProductCard';
 import { STOCK_IMAGES, CATEGORIES } from '@/lib/constants';
+import { formatINR } from '@/utils/currency';
 
 function HeroSection() {
   const [current, setCurrent] = useState(0);
@@ -100,7 +101,7 @@ function HeroSection() {
 
 function TrustBadges() {
   const badges = [
-    { icon: Truck, title: 'Free Shipping', desc: 'On orders over $200' },
+    { icon: Truck, title: 'Free Shipping', desc: `On orders over ${formatINR(5000)}` },
     { icon: Shield, title: 'Quality Guarantee', desc: '30-day satisfaction' },
     { icon: Award, title: 'Premium Fabrics', desc: 'Handpicked materials' },
     { icon: Ruler, title: 'Custom Sizing', desc: 'Made to measure' },

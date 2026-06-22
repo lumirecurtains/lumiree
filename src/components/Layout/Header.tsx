@@ -42,7 +42,7 @@ export default function Header() {
               <Phone className="w-3 h-3" /> {contactInfo.phone}
             </a>
             <span className="hidden sm:inline text-stone-400">|</span>
-            <span className="hidden sm:inline text-stone-400">Free Shipping on Orders Over $200</span>
+            <span className="hidden sm:inline text-stone-400">Free Shipping on Orders Over ₹5,000</span>
           </div>
           <div className="flex items-center gap-4">
             {user ? (

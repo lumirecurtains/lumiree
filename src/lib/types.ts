@@ -47,13 +47,14 @@ export interface FAQ {
 export interface Review {
   id: string;
   productId: string;
+  productName?: string;
   userName: string;
   userEmail: string;
   rating: number;
   title: string;
   text: string;
   createdAt: string;
-  approved: boolean;
+  status: 'pending' | 'approved' | 'rejected';
 }
 
 export interface Inquiry {

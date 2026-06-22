@@ -4,6 +4,7 @@ import { SlidersHorizontal, X, Search, Grid3X3, LayoutList } from 'lucide-react'
 import { useStore } from '@/contexts/StoreContext';
 import ProductCard from '@/components/ProductCard';
 import { CATEGORIES, MATERIALS, COLORS } from '@/lib/constants';
+import { formatINR } from '@/utils/currency';
 
 export default function Shop() {
   const [searchParams] = useSearchParams();
@@ -186,16 +187,17 @@ export default function Shop() {
               <div>
                 <h4 className="font-semibold text-stone-900 text-sm mb-3">Price Range</h4>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-stone-500">${priceRange[0]}</span>
+                  <span className="text-sm text-stone-500">{formatINR(priceRange[0])}</span>
                   <input
                     type="range"
                     min="0"
-                    max="500"
+                    max="100000"
+                    step="1000"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
                     className="flex-1 accent-gold-600"
                   />
-                  <span className="text-sm text-stone-500">${priceRange[1]}</span>
+                  <span className="text-sm text-stone-500">{formatINR(priceRange[1])}</span>
                 </div>
               </div>
 
@@ -242,9 +244,9 @@ export default function Shop() {
                         <p className="text-sm text-stone-500 line-clamp-2 mb-2">{p.shortDescription}</p>
                         <div className="flex items-center gap-2">
                           {p.salePrice ? (
-                            <><span className="text-lg font-bold text-stone-900">${p.salePrice}</span><span className="text-sm text-stone-400 line-through">${p.price}</span></>
+                            <><span className="text-lg font-bold text-stone-900">{formatINR(p.salePrice)}</span><span className="text-sm text-stone-400 line-through">{formatINR(p.price)}</span></>
                           ) : (
-                            <span className="text-lg font-bold text-stone-900">${p.price}</span>
+                            <span className="text-lg font-bold text-stone-900">{formatINR(p.price)}</span>
                           )}
                         </div>
                       </div>

@@ -96,5 +96,29 @@ service cloud.firestore {
       // Only admins can manage gallery
       allow create, update, delete: if isAdmin();
     }
+    
+    // Reviews collection
+    match /reviews/{reviewId} {
+      // Anyone can read reviews (client-side filters by status)
+      allow read: if true;
+      
+      // Anyone can create a review (submitted as 'pending')
+      // Spam safeguards:
+      //   - status must be 'pending' on creation
+      //   - userName must exist and be a non-empty string
+      //   - rating must be 1-5
+      //   - text must exist and be a non-empty string
+      allow create: if request.resource.data.status == 'pending'
+                       && request.resource.data.userName is string
+                       && request.resource.data.userName.size() > 0
+                       && request.resource.data.rating is number
+                       && request.resource.data.rating >= 1
+                       && request.resource.data.rating <= 5
+                       && request.resource.data.text is string
+                       && request.resource.data.text.size() > 0;
+      
+      // Only admins can approve, reject, edit, or delete reviews
+      allow update, delete: if isAdmin();
+    }
   }
 }

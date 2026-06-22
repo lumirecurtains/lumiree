@@ -36,6 +36,7 @@ import AdminContact from '@/pages/Admin/AdminContact';
 import AdminUsers from '@/pages/Admin/AdminUsers';
 import AdminSettings from '@/pages/Admin/AdminSettings';
 import AdminGallery from '@/pages/Admin/AdminGallery';
+import AdminReviews from '@/pages/Admin/AdminReviews';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -98,6 +99,7 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="inquiries" element={<AdminInquiries />} />
+            <Route path="reviews" element={<AdminReviews />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="faqs" element={<AdminFAQs />} />
             <Route path="gallery" element={<AdminGallery />} />

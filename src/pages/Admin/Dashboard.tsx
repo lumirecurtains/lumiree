@@ -1,22 +1,21 @@
-import { Package, MessageSquare, Star, Eye, TrendingUp, DollarSign, Users, ShoppingBag, Settings } from 'lucide-react';
+import { Package, MessageSquare, Star, TrendingUp, IndianRupee, MessageSquareText, Settings } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import { Link } from 'react-router-dom';
+import { formatINR } from '@/utils/currency';
 
 export default function Dashboard() {
-  const { products, inquiries, testimonials, wishlist } = useStore();
+  const { products, inquiries, reviews, wishlist } = useStore();
 
   const totalProducts = products.length;
-  const featuredProducts = products.filter(p => p.featured).length;
-  const totalInquiries = inquiries.length;
   const newInquiries = inquiries.filter(i => i.status === 'new').length;
-  const avgRating = products.reduce((sum, p) => sum + p.rating, 0) / (products.length || 1);
+  const pendingReviews = reviews.filter(r => r.status === 'pending').length;
   const totalRevenue = products.reduce((sum, p) => sum + (p.salePrice || p.price) * (p.reviewCount || 1), 0);
 
   const stats = [
     { icon: Package, label: 'Total Products', value: totalProducts, color: 'bg-blue-100 text-blue-700', link: '/admin/products' },
     { icon: MessageSquare, label: 'New Inquiries', value: newInquiries, color: 'bg-amber-100 text-amber-700', link: '/admin/inquiries' },
-    { icon: Star, label: 'Avg Rating', value: avgRating.toFixed(1), color: 'bg-emerald-100 text-emerald-700', link: '/admin/testimonials' },
-    { icon: Eye, label: 'Wishlisted Items', value: wishlist.length, color: 'bg-purple-100 text-purple-700', link: '/admin/products' },
+    { icon: MessageSquareText, label: 'Pending Reviews', value: pendingReviews, color: 'bg-emerald-100 text-emerald-700', link: '/admin/reviews' },
+    { icon: IndianRupee, label: 'Est. Value', value: formatINR(totalRevenue), color: 'bg-purple-100 text-purple-700', link: '/admin/products' },
   ];
 
   const recentInquiries = inquiries.slice(0, 5);
@@ -88,7 +87,7 @@ export default function Dashboard() {
                   <p className="text-sm font-medium text-stone-900 truncate">{p.name}</p>
                   <p className="text-xs text-stone-500">{p.reviewCount} reviews • ⭐ {p.rating}</p>
                 </div>
-                <p className="text-sm font-bold text-stone-900">${p.salePrice || p.price}</p>
+                <p className="text-sm font-bold text-stone-900">{formatINR(p.salePrice || p.price)}</p>
               </div>
             ))}
           </div>
@@ -99,7 +98,7 @@ export default function Dashboard() {
       <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { icon: Package, label: 'Add Product', to: '/admin/products', color: 'bg-blue-600' },
-          { icon: Star, label: 'Add Testimonial', to: '/admin/testimonials', color: 'bg-amber-600' },
+          { icon: MessageSquareText, label: 'Moderate Reviews', to: '/admin/reviews', color: 'bg-amber-600' },
           { icon: MessageSquare, label: 'View Inquiries', to: '/admin/inquiries', color: 'bg-green-600' },
           { icon: Settings, label: 'Settings', to: '/admin/settings', color: 'bg-purple-600' },
         ].map((action, i) => (
