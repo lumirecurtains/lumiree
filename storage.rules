@@ -1,44 +1,56 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    
-    // Helper function to check if user is authenticated
+
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    // Helper function to check if user is the Super Admin
+
     function isSuperAdmin() {
-      return isAuthenticated() && 
-             request.auth.token.email == 'lexcorp0777@gmail.com';
+      return isAuthenticated() &&
+             request.auth.token.email.lower() == 'lexcorp0777@gmail.com';
     }
-    
-    // Product images
+
+    // Admin access is granted through the 'role' custom claim, which is set
+    // exclusively by the /api/admin-users backend (Firebase Admin SDK).
+    // NOTE: Storage rules cannot call Firestore get() — the previous rules
+    // used get(/databases/...) which is invalid in Storage and always failed.
+    function isAdmin() {
+      return isSuperAdmin() || (
+        isAuthenticated() && request.auth.token.get('role', '') == 'admin'
+      );
+    }
+
+    function isValidImage() {
+      return request.resource == null || (
+        request.resource.contentType.matches('image/.*') &&
+        request.resource.size < 10 * 1024 * 1024
+      );
+    }
+
     match /products/{allPaths=**} {
-      // Anyone can read product images
       allow read: if true;
-      
-      // Only authenticated admins can upload
-      // Note: Full admin check requires custom claims or Firestore lookup
-      allow write: if isAuthenticated();
+      allow write: if isAdmin() && isValidImage();
     }
-    
-    // Gallery images
+
     match /gallery/{allPaths=**} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isAdmin() && isValidImage();
     }
-    
-    // Testimonial images
+
     match /testimonials/{allPaths=**} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isAdmin() && isValidImage();
     }
-    
-    // General uploads
+
     match /uploads/{allPaths=**} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isAdmin() && isValidImage();
+    }
+
+    // Deny everything else by default
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

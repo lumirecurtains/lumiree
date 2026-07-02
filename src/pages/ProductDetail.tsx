@@ -52,8 +52,8 @@ export default function ProductDetail() {
 
   const whatsappMsg = `Hi! I'm interested in "${product.name}" (${selectedColor}, ${selectedSize}). Price: ${formatINR(product.salePrice || product.price)}. Can you help me?`;
 
-  const productSchema = useMemo(() => {
-    const schema: any = {
+  const productSchema = useMemo<Record<string, unknown> | undefined>(() => {
+    const schema: Record<string, unknown> = {
       "@context": "https://schema.org",
       "@graph": [
         {
@@ -86,7 +86,9 @@ export default function ProductDetail() {
       ]
     };
     if (product.reviewCount > 0) {
-      schema["@graph"][0].aggregateRating = {
+      const graph = schema["@graph"] as Array<Record<string, unknown>>;
+      const productNode = graph[0] as Record<string, unknown>;
+      productNode.aggregateRating = {
         "@type": "AggregateRating",
         "ratingValue": product.rating.toString(),
         "reviewCount": product.reviewCount.toString()
@@ -125,7 +127,7 @@ export default function ProductDetail() {
           {/* Images */}
           <div>
             <div className="relative aspect-[4/5] bg-white rounded-xl overflow-hidden mb-3 group cursor-pointer" onClick={() => setZoomOpen(true)}>
-              <img src={product.images[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
+              <img src={product.images[selectedImage]} alt={product.name} className="w-full h-full object-cover" width={1200} height={1500} />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
                 <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
@@ -140,7 +142,7 @@ export default function ProductDetail() {
                   onClick={() => setSelectedImage(i)}
                   className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors ${i === selectedImage ? 'border-gold-600' : 'border-transparent'}`}
                 >
-                  <img src={img} alt={`${product.name} view ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                  <img src={img} alt={`${product.name} view ${i + 1}`} className="w-full h-full object-cover" loading="lazy" width={200} height={200} />
                 </button>
               ))}
             </div>
@@ -344,7 +346,7 @@ export default function ProductDetail() {
       {zoomOpen && (
         <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setZoomOpen(false)}>
           <button className="absolute top-4 right-4 text-white"><X className="w-8 h-8" /></button>
-          <img src={product.images[selectedImage]} alt={product.name} className="max-w-full max-h-full object-contain" />
+          <img src={product.images[selectedImage]} alt={product.name} className="max-w-full max-h-full object-contain" width={1200} height={1500} />
         </div>
       )}
     </div>

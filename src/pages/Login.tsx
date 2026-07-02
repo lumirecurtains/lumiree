@@ -1,8 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import SEOHead from '@/components/SEOHead';
 import toast from 'react-hot-toast';
+
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  'auth/invalid-credential': 'Incorrect email or password.',
+  'auth/wrong-password': 'Incorrect email or password.',
+  'auth/user-not-found': 'No account found with that email.',
+  'auth/invalid-email': 'Please enter a valid email address.',
+  'auth/user-disabled': 'This account has been disabled. Contact support.',
+  'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+  'auth/email-already-in-use': 'An account with that email already exists. Try signing in.',
+  'auth/weak-password': 'Password must be at least 6 characters.',
+  'auth/network-request-failed': 'Network error. Check your connection and try again.',
+  'auth/popup-blocked': 'Your browser blocked the sign-in popup. Allow popups and retry.',
+};
+
+function mapAuthError(error: unknown): string {
+  const code = (error as { code?: string })?.code || '';
+  if (code && AUTH_ERROR_MESSAGES[code]) return AUTH_ERROR_MESSAGES[code];
+  return error instanceof Error && !error.message.startsWith('Firebase:')
+    ? error.message
+    : 'Authentication failed. Please try again.';
+}
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -20,7 +41,7 @@ export default function Login() {
     }
   }, [user, isAdmin, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -31,20 +52,28 @@ export default function Login() {
         await signUp(email, password, name);
         toast.success('Account created!');
       }
-      navigate('/');
-    } catch (err: any) {
-      toast.error(err.message || 'Authentication failed');
+      // Redirect handled by the `user` effect above (admin → /admin, else → /)
+    } catch (error: unknown) {
+      toast.error(mapAuthError(error));
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleGoogle = async () => {
+    setLoading(true);
     try {
       await signInWithGoogle();
       toast.success('Welcome!');
-      navigate('/');
-    } catch (err: any) {
-      toast.error(err.message || 'Google sign-in failed');
+      // Redirect handled by the `user` effect above
+    } catch (error: unknown) {
+      // Popup closed by the user is not an error worth toasting
+      const code = (error as { code?: string })?.code || '';
+      if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
+        toast.error(mapAuthError(error));
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,7 +118,7 @@ export default function Login() {
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-stone-200" /></div>
               <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-stone-400">or</span></div>
             </div>
-            <button onClick={handleGoogle} className="w-full px-6 py-3 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors">
+            <button onClick={handleGoogle} disabled={loading} className="w-full px-6 py-3 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               Continue with Google
             </button>
           </div>

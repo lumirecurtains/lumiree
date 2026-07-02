@@ -71,12 +71,16 @@ export default function Shop() {
 
   const catName = selectedCategory ? CATEGORIES.find(c => c.id === selectedCategory)?.name || 'Curtains' : 'All Curtains';
 
+  const canonicalPath = selectedCategory && !searchQuery && !selectedMaterial && !selectedColor && !searchParams.get('featured') && !searchParams.get('bestseller') && !searchParams.get('new')
+    ? `/shop?category=${selectedCategory}`
+    : '/shop';
+
   return (
     <div className="bg-stone-50 min-h-screen">
       <SEOHead
         title={`Shop ${catName} Online in Begusarai, Bihar | LuxDrape`}
         description={`Browse premium ${catName.toLowerCase()} at LuxDrape. Blackout, sheer, velvet & custom options. Serving Begusarai, Patna & all Bihar. Free shipping over ₹5,000.`}
-        canonical={`/shop${selectedCategory ? `?category=${selectedCategory}` : ''}`}
+        canonical={canonicalPath}
       />
       {/* Header */}
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-12 md:py-16">

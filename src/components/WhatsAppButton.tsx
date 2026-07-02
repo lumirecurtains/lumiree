@@ -1,19 +1,19 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { X, MessageCircle } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
+
+const cleanNumber = (num: string) => num.replace(/[^0-9]/g, '');
 
 export default function WhatsAppButton() {
   const [open, setOpen] = useState(false);
   const { contactInfo } = useStore();
 
-  const cleanNumber = (num: string) => num.replace(/[^0-9]/g, '');
-
-  const options = [
+  const options = useMemo(() => [
     { label: '🛒 Sales Inquiry', number: contactInfo.whatsappSales, msg: "Hi! I'm interested in purchasing curtains from LuxDrape." },
     { label: '🔧 Support', number: contactInfo.whatsappSupport, msg: "Hi! I need support with my LuxDrape order." },
     { label: '📦 Bulk Orders', number: contactInfo.whatsappBulk, msg: "Hi! I'd like to inquire about bulk curtain orders." },
     { label: '📐 Installation', number: contactInfo.whatsappSales, msg: "Hi! I'd like to book a curtain installation service." },
-  ];
+  ], [contactInfo.whatsappSales, contactInfo.whatsappSupport, contactInfo.whatsappBulk]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50">

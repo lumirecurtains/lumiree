@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Send, Ruler, Palette, Layers } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
-import { MATERIALS, CURTAIN_STYLES, ROD_TYPES, PLEAT_STYLES, COLORS, STOCK_IMAGES } from '@/lib/constants';
+import { MATERIALS, CURTAIN_STYLES, ROD_TYPES, PLEAT_STYLES, STOCK_IMAGES } from '@/lib/constants';
 import SEOHead from '@/components/SEOHead';
 import toast from 'react-hot-toast';
 
@@ -13,11 +13,8 @@ export default function CustomOrder() {
     quantity: '1', notes: '', room: '',
   });
 
-  const [submitting, setSubmitting] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     try {
       await addInquiry({
         id: `inq-${Date.now()}`,
@@ -35,7 +32,6 @@ export default function CustomOrder() {
       console.error('Error submitting order:', error);
       toast.error('Failed to submit. Please try again.');
     }
-    setSubmitting(false);
   };
 
   return (

@@ -1,4 +1,3 @@
-import { Image } from 'lucide-react';
 import { STOCK_IMAGES } from '@/lib/constants';
 
 export default function AdminGallery() {

@@ -15,6 +15,15 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Strictness */
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
@@ -22,9 +31,6 @@
     },
 
     /* Linting */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "vite.config.ts"]

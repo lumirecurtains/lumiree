@@ -1,10 +1,10 @@
-import { Package, MessageSquare, Star, TrendingUp, IndianRupee, MessageSquareText, Settings } from 'lucide-react';
+import { Package, MessageSquare, TrendingUp, IndianRupee, MessageSquareText, Settings } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import { Link } from 'react-router-dom';
 import { formatINR } from '@/utils/currency';
 
 export default function Dashboard() {
-  const { products, inquiries, reviews, wishlist } = useStore();
+  const { products, inquiries, reviews } = useStore();
 
   const totalProducts = products.length;
   const newInquiries = inquiries.filter(i => i.status === 'new').length;

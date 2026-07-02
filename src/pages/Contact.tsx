@@ -8,11 +8,8 @@ export default function Contact() {
   const { contactInfo, addInquiry } = useStore();
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
 
-  const [submitting, setSubmitting] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     try {
       await addInquiry({
         id: `inq-${Date.now()}`,
@@ -30,7 +27,6 @@ export default function Contact() {
       console.error('Error submitting inquiry:', error);
       toast.error('Failed to send message. Please try again.');
     }
-    setSubmitting(false);
   };
 
   return (

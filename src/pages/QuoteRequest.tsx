@@ -9,11 +9,8 @@ export default function QuoteRequest() {
   const { addInquiry } = useStore();
   const [form, setForm] = useState({ name: '', email: '', phone: '', rooms: '', budget: '', message: '' });
 
-  const [submitting, setSubmitting] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     try {
       await addInquiry({
         id: `inq-${Date.now()}`, type: 'quote', name: form.name, email: form.email, phone: form.phone,
@@ -26,7 +23,6 @@ export default function QuoteRequest() {
       console.error('Error submitting quote:', error);
       toast.error('Failed to submit. Please try again.');
     }
-    setSubmitting(false);
   };
 
   return (

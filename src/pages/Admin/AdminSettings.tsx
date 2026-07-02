@@ -1,9 +1,6 @@
-import { useAuth } from '@/contexts/AuthContext';
 import { SUPER_ADMIN_EMAIL } from '@/lib/constants';
 
 export default function AdminSettings() {
-  const { isSuperAdmin } = useAuth();
-
   return (
     <div>
       <div className="mb-6">

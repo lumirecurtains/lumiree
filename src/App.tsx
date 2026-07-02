@@ -8,37 +8,37 @@ import Footer from '@/components/Layout/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 
 // Pages
-import Home from '@/pages/Home';
-import Shop from '@/pages/Shop';
-import ProductDetail from '@/pages/ProductDetail';
-import About from '@/pages/About';
-import Contact from '@/pages/Contact';
-import Gallery from '@/pages/Gallery';
-import Reviews from '@/pages/Reviews';
-import FAQ from '@/pages/FAQ';
-import CustomOrder from '@/pages/CustomOrder';
-import Installation from '@/pages/Installation';
-import Wishlist from '@/pages/Wishlist';
-import QuoteRequest from '@/pages/QuoteRequest';
-import Login from '@/pages/Login';
-import Privacy from '@/pages/Privacy';
-import Terms from '@/pages/Terms';
-import NotFound from '@/pages/NotFound';
+const Home = lazy(() => import('@/pages/Home'));
+const Shop = lazy(() => import('@/pages/Shop'));
+const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
+const About = lazy(() => import('@/pages/About'));
+const Contact = lazy(() => import('@/pages/Contact'));
+const Gallery = lazy(() => import('@/pages/Gallery'));
+const Reviews = lazy(() => import('@/pages/Reviews'));
+const FAQ = lazy(() => import('@/pages/FAQ'));
+const CustomOrder = lazy(() => import('@/pages/CustomOrder'));
+const Installation = lazy(() => import('@/pages/Installation'));
+const Wishlist = lazy(() => import('@/pages/Wishlist'));
+const QuoteRequest = lazy(() => import('@/pages/QuoteRequest'));
+const Login = lazy(() => import('@/pages/Login'));
+const Privacy = lazy(() => import('@/pages/Privacy'));
+const Terms = lazy(() => import('@/pages/Terms'));
+const NotFound = lazy(() => import('@/pages/NotFound'));
 
 // Admin
-import AdminLayout from '@/pages/Admin/AdminLayout';
-import Dashboard from '@/pages/Admin/Dashboard';
-import AdminProducts from '@/pages/Admin/AdminProducts';
-import AdminInquiries from '@/pages/Admin/AdminInquiries';
-import AdminTestimonials from '@/pages/Admin/AdminTestimonials';
-import AdminFAQs from '@/pages/Admin/AdminFAQs';
-import AdminContact from '@/pages/Admin/AdminContact';
-import AdminUsers from '@/pages/Admin/AdminUsers';
-import AdminSettings from '@/pages/Admin/AdminSettings';
-import AdminGallery from '@/pages/Admin/AdminGallery';
-import AdminReviews from '@/pages/Admin/AdminReviews';
+const AdminLayout = lazy(() => import('@/pages/Admin/AdminLayout'));
+const Dashboard = lazy(() => import('@/pages/Admin/Dashboard'));
+const AdminProducts = lazy(() => import('@/pages/Admin/AdminProducts'));
+const AdminInquiries = lazy(() => import('@/pages/Admin/AdminInquiries'));
+const AdminTestimonials = lazy(() => import('@/pages/Admin/AdminTestimonials'));
+const AdminFAQs = lazy(() => import('@/pages/Admin/AdminFAQs'));
+const AdminContact = lazy(() => import('@/pages/Admin/AdminContact'));
+const AdminUsers = lazy(() => import('@/pages/Admin/AdminUsers'));
+const AdminSettings = lazy(() => import('@/pages/Admin/AdminSettings'));
+const AdminGallery = lazy(() => import('@/pages/Admin/AdminGallery'));
+const AdminReviews = lazy(() => import('@/pages/Admin/AdminReviews'));
 
-function ScrollToTop() {
+function ScrollToTop(): null {
   const { pathname } = useLocation();
   
   useEffect(() => {
@@ -73,10 +73,6 @@ function LoadingScreen() {
 }
 
 export default function App() {
-  const location = useLocation();
-  const isAdmin = location.pathname.startsWith('/admin');
-  const isLogin = location.pathname === '/login';
-
   return (
     <AuthProvider>
       <StoreProvider>
@@ -93,41 +89,43 @@ export default function App() {
           }}
         />
         
-        <Routes>
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="products" element={<AdminProducts />} />
-            <Route path="inquiries" element={<AdminInquiries />} />
-            <Route path="reviews" element={<AdminReviews />} />
-            <Route path="testimonials" element={<AdminTestimonials />} />
-            <Route path="faqs" element={<AdminFAQs />} />
-            <Route path="gallery" element={<AdminGallery />} />
-            <Route path="contact" element={<AdminContact />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="settings" element={<AdminSettings />} />
-          </Route>
+        <Suspense fallback={<LoadingScreen />}>
+          <Routes>
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="inquiries" element={<AdminInquiries />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route path="testimonials" element={<AdminTestimonials />} />
+              <Route path="faqs" element={<AdminFAQs />} />
+              <Route path="gallery" element={<AdminGallery />} />
+              <Route path="contact" element={<AdminContact />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
 
-          {/* Login */}
-          <Route path="/login" element={<Login />} />
+            {/* Login */}
+            <Route path="/login" element={<Login />} />
 
-          {/* Public Routes */}
-          <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
-          <Route path="/shop" element={<PublicLayout><Shop /></PublicLayout>} />
-          <Route path="/product/:slug" element={<PublicLayout><ProductDetail /></PublicLayout>} />
-          <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
-          <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-          <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
-          <Route path="/reviews" element={<PublicLayout><Reviews /></PublicLayout>} />
-          <Route path="/faq" element={<PublicLayout><FAQ /></PublicLayout>} />
-          <Route path="/custom-order" element={<PublicLayout><CustomOrder /></PublicLayout>} />
-          <Route path="/installation" element={<PublicLayout><Installation /></PublicLayout>} />
-          <Route path="/wishlist" element={<PublicLayout><Wishlist /></PublicLayout>} />
-          <Route path="/quote-request" element={<PublicLayout><QuoteRequest /></PublicLayout>} />
-          <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
-          <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
-          <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
-        </Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+            <Route path="/shop" element={<PublicLayout><Shop /></PublicLayout>} />
+            <Route path="/product/:slug" element={<PublicLayout><ProductDetail /></PublicLayout>} />
+            <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+            <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+            <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
+            <Route path="/reviews" element={<PublicLayout><Reviews /></PublicLayout>} />
+            <Route path="/faq" element={<PublicLayout><FAQ /></PublicLayout>} />
+            <Route path="/custom-order" element={<PublicLayout><CustomOrder /></PublicLayout>} />
+            <Route path="/installation" element={<PublicLayout><Installation /></PublicLayout>} />
+            <Route path="/wishlist" element={<PublicLayout><Wishlist /></PublicLayout>} />
+            <Route path="/quote-request" element={<PublicLayout><QuoteRequest /></PublicLayout>} />
+            <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
+            <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
+            <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
+          </Routes>
+        </Suspense>
       </StoreProvider>
     </AuthProvider>
   );

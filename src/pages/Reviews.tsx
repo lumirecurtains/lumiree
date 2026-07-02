@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Star, Send, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import SEOHead from '@/components/SEOHead';
@@ -36,7 +36,7 @@ export default function Reviews() {
     userName: '', userEmail: '', rating: 0, title: '', text: '', productId: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form.userName.trim()) { toast.error('Please enter your name.'); return; }
     if (form.rating === 0) { toast.error('Please select a rating.'); return; }
@@ -60,9 +60,10 @@ export default function Reviews() {
       });
       setSubmitted(true);
       setForm({ userName: '', userEmail: '', rating: 0, title: '', text: '', productId: '' });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error submitting review:', error);
-      toast.error(error?.message || 'Failed to submit review. Please try again.');
+      const message = error instanceof Error ? error.message : 'Failed to submit review. Please try again.';
+      toast.error(message);
     }
     setSubmitting(false);
   };
@@ -73,7 +74,7 @@ export default function Reviews() {
     return { star, count: c, pct: count > 0 ? Math.round((c / count) * 100) : 0 };
   });
 
-  const reviewSchema = count > 0 ? {
+  const reviewSchema: Record<string, unknown> | undefined = count > 0 ? {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "LuxDrape",

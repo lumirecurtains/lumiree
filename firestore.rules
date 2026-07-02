@@ -1,123 +1,141 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check if user is authenticated
+
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    // Helper function to check if user is the Super Admin
+
+    function normalizedEmail(email) {
+      return email != null ? email.lower() : '';
+    }
+
     function isSuperAdmin() {
-      return isAuthenticated() && 
-             request.auth.token.email == 'lexcorp0777@gmail.com';
+      return isAuthenticated() &&
+        normalizedEmail(request.auth.token.email) == 'lexcorp0777@gmail.com';
     }
-    
-    // Helper function to check if user is admin or super admin
+
+    function hasAdminClaim() {
+      return isAuthenticated() && request.auth.token.get('role', '') == 'admin';
+    }
+
+    function isActiveAdmin(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data.role == 'admin' &&
+        get(/databases/$(database)/documents/users/$(userId)).data.status == 'active';
+    }
+
     function isAdmin() {
-      return isAuthenticated() && 
-             (isSuperAdmin() || 
-              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+      return isSuperAdmin() || hasAdminClaim() || (
+        isAuthenticated() && isActiveAdmin(request.auth.uid)
+      );
     }
-    
-    // Users collection
-    match /users/{userId} {
-      // Users can read their own profile
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      
-      // Admins can read all user profiles
+
+    match /emailIndex/{emailId} {
       allow read: if isAdmin();
-      
-      // Users can create their own profile on first sign-in
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      
-      // Users can update their own profile (except role and status)
-      allow update: if isAuthenticated() && request.auth.uid == userId &&
-                       !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status']);
-      
-      // Only Super Admin can update roles and status
-      allow update: if isSuperAdmin();
-      
-      // CRITICAL: Super Admin account (lexcorp0777@gmail.com) cannot be deleted
-      allow delete: if isSuperAdmin() && 
-                       resource.data.email != 'lexcorp0777@gmail.com';
-    }
-    
-    // Products collection
-    match /products/{productId} {
-      // Anyone can read products
-      allow read: if true;
-      
-      // Only admins can create, update, delete products
-      allow create, update, delete: if isAdmin();
-    }
-    
-    // Testimonials collection
-    match /testimonials/{testimonialId} {
-      // Anyone can read testimonials
-      allow read: if true;
-      
-      // Only admins can manage testimonials
-      allow create, update, delete: if isAdmin();
-    }
-    
-    // FAQs collection
-    match /faqs/{faqId} {
-      // Anyone can read FAQs
-      allow read: if true;
-      
-      // Only admins can manage FAQs
-      allow create, update, delete: if isAdmin();
-    }
-    
-    // Inquiries collection
-    match /inquiries/{inquiryId} {
-      // Anyone can create inquiries (contact forms)
-      allow create: if true;
-      
-      // Only admins can read and manage inquiries
-      allow read, update, delete: if isAdmin();
-    }
-    
-    // Settings collection (contact info, etc.)
-    match /settings/{settingId} {
-      // Anyone can read settings
-      allow read: if true;
-      
-      // Only Super Admin can modify global settings
       allow create, update, delete: if isSuperAdmin();
     }
-    
-    // Gallery collection
-    match /gallery/{imageId} {
-      // Anyone can read gallery
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow read: if isAdmin();
+
+      allow create: if isAuthenticated() && (
+        (
+          request.auth.uid == userId
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.email == normalizedEmail(request.auth.token.email)
+          && request.resource.data.displayName is string
+          && request.resource.data.displayName.size() > 0
+          && request.resource.data.role in ['customer', 'admin', 'super_admin']
+          && (request.resource.data.role != 'super_admin' || isSuperAdmin())
+          && (request.resource.data.role != 'admin' || hasAdminClaim())
+          && request.resource.data.status == 'active'
+          && request.resource.data.wishlist is list
+          && request.resource.data.recentlyViewed is list
+          && request.resource.data.createdAt is timestamp
+        )
+        ||
+        (
+          isSuperAdmin()
+          && request.resource.data.uid == userId
+          && request.resource.data.email is string
+          && request.resource.data.displayName is string
+          && request.resource.data.displayName.size() > 0
+          && request.resource.data.role in ['admin', 'super_admin']
+          && request.resource.data.status in ['active', 'inactive']
+          && request.resource.data.wishlist is list
+          && request.resource.data.recentlyViewed is list
+          && request.resource.data.createdAt is timestamp
+        )
+      );
+
+      allow update: if isAuthenticated() && request.auth.uid == userId &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status', 'uid', 'email', 'createdAt']);
+
+      allow update: if isSuperAdmin();
+
+      allow delete: if isSuperAdmin() && normalizedEmail(resource.data.email) != 'lexcorp0777@gmail.com';
+    }
+
+    match /products/{productId} {
       allow read: if true;
-      
-      // Only admins can manage gallery
       allow create, update, delete: if isAdmin();
     }
-    
-    // Reviews collection
-    match /reviews/{reviewId} {
-      // Anyone can read reviews (client-side filters by status)
+
+    match /testimonials/{testimonialId} {
       allow read: if true;
-      
-      // Anyone can create a review (submitted as 'pending')
-      // Spam safeguards:
-      //   - status must be 'pending' on creation
-      //   - userName must exist and be a non-empty string
-      //   - rating must be 1-5
-      //   - text must exist and be a non-empty string
-      allow create: if request.resource.data.status == 'pending'
-                       && request.resource.data.userName is string
-                       && request.resource.data.userName.size() > 0
-                       && request.resource.data.rating is number
-                       && request.resource.data.rating >= 1
-                       && request.resource.data.rating <= 5
-                       && request.resource.data.text is string
-                       && request.resource.data.text.size() > 0;
-      
-      // Only admins can approve, reject, edit, or delete reviews
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /faqs/{faqId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /inquiries/{inquiryId} {
+      // Public contact/quote/installation forms — validated to prevent abuse.
+      allow create: if request.resource.data.keys().hasOnly(['type', 'name', 'email', 'phone', 'message', 'productId', 'status', 'createdAt'])
+        && request.resource.data.type in ['product', 'quote', 'installation', 'bulk', 'general']
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() <= 32
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 5000
+        && request.resource.data.status == 'new';
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      // Business contact info is managed by any active admin;
+      // all other settings remain Super Admin only.
+      allow create, update: if settingId == 'contactInfo' ? isAdmin() : isSuperAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /gallery/{imageId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['userName', 'userEmail', 'rating', 'title', 'text', 'productId', 'productName', 'status', 'createdAt'])
+        && request.resource.data.status == 'pending'
+        && request.resource.data.userName is string
+        && request.resource.data.userName.size() > 0
+        && request.resource.data.userName.size() <= 120
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 5000;
       allow update, delete: if isAdmin();
     }
   }

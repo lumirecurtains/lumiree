@@ -7,36 +7,45 @@ import SEOHead from '@/components/SEOHead';
 import { STOCK_IMAGES, CATEGORIES } from '@/lib/constants';
 import { formatINR } from '@/utils/currency';
 
+const HERO_SLIDES = [
+  {
+    image: STOCK_IMAGES.hero,
+    title: 'Premium Curtains\nin Begusarai',
+    subtitle: 'Bihar\'s finest luxury curtain store — handcrafted window treatments delivered to your door',
+    cta: 'Explore Collection',
+    link: '/shop',
+  },
+  {
+    image: STOCK_IMAGES.hero2,
+    title: 'Transform Your\nBedroom Sanctuary',
+    subtitle: 'Premium blackout & sheer curtains for the perfect ambiance — serving all of Bihar',
+    cta: 'Shop Bedroom',
+    link: '/shop?category=bedroom',
+  },
+  {
+    image: STOCK_IMAGES.hero3,
+    title: 'Custom Tailored\nTo Perfection',
+    subtitle: 'Made-to-measure curtains crafted by expert artisans in Begusarai',
+    cta: 'Order Custom',
+    link: '/custom-order',
+  },
+] as const;
+
+
+const BEFORE_AFTER_ITEMS = [
+  { before: STOCK_IMAGES.white, after: STOCK_IMAGES.bedroom, room: 'Master Bedroom' },
+  { before: STOCK_IMAGES.office, after: STOCK_IMAGES.livingRoom, room: 'Living Room' },
+];
+
 function HeroSection() {
   const [current, setCurrent] = useState(0);
-  const slides = [
-    {
-      image: STOCK_IMAGES.hero,
-      title: 'Premium Curtains\nin Begusarai',
-      subtitle: 'Bihar\'s finest luxury curtain store — handcrafted window treatments delivered to your door',
-      cta: 'Explore Collection',
-      link: '/shop',
-    },
-    {
-      image: STOCK_IMAGES.hero2,
-      title: 'Transform Your\nBedroom Sanctuary',
-      subtitle: 'Premium blackout & sheer curtains for the perfect ambiance — serving all of Bihar',
-      cta: 'Shop Bedroom',
-      link: '/shop?category=bedroom',
-    },
-    {
-      image: STOCK_IMAGES.hero3,
-      title: 'Custom Tailored\nTo Perfection',
-      subtitle: 'Made-to-measure curtains crafted by expert artisans in Begusarai',
-      cta: 'Order Custom',
-      link: '/custom-order',
-    },
-  ];
+  const slides = HERO_SLIDES;
+  const slide: typeof HERO_SLIDES[number] = slides[current] ?? HERO_SLIDES[0] as typeof HERO_SLIDES[number];
 
   useEffect(() => {
     const timer = setInterval(() => setCurrent(prev => (prev + 1) % slides.length), 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   return (
     <section className="relative h-[70vh] md:h-[85vh] overflow-hidden">
@@ -45,7 +54,7 @@ function HeroSection() {
           key={i}
           className={`absolute inset-0 transition-opacity duration-1000 ${i === current ? 'opacity-100' : 'opacity-0'}`}
         >
-          <img src={slide.image} alt="Luxury curtains showroom in Begusarai Bihar" className="w-full h-full object-cover" />
+          <img src={slide.image} alt="Luxury curtains showroom in Begusarai Bihar" className="w-full h-full object-cover" width={1920} height={1080} />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
         </div>
       ))}
@@ -55,17 +64,17 @@ function HeroSection() {
           <div className="max-w-2xl">
             <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-4 animate-fade-in">Premium Collection</p>
             <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 whitespace-pre-line">
-              {slides[current].title}
+              {slide.title}
             </h1>
             <p className="text-lg md:text-xl text-white/80 mb-8 max-w-lg">
-              {slides[current].subtitle}
+              {slide.subtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                to={slides[current].link}
+                to={slide.link}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gold-600 hover:bg-gold-700 text-white font-semibold rounded-lg transition-colors"
               >
-                {slides[current].cta} <ArrowRight className="w-4 h-4" />
+                {slide.cta} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 to="/quote-request"
@@ -285,7 +294,7 @@ function Testimonials() {
               </div>
               <p className="text-stone-300 leading-relaxed mb-6 italic">"{t.text}"</p>
               <div className="flex items-center gap-3">
-                <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" loading="lazy" />
+                <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" loading="lazy" width={48} height={48} />
                 <div>
                   <p className="font-semibold text-white">{t.name}</p>
                   <p className="text-xs text-stone-400">{t.role}</p>
@@ -306,11 +315,6 @@ function Testimonials() {
 }
 
 function BeforeAfter() {
-  const items = [
-    { before: STOCK_IMAGES.white, after: STOCK_IMAGES.bedroom, room: 'Master Bedroom' },
-    { before: STOCK_IMAGES.office, after: STOCK_IMAGES.livingRoom, room: 'Living Room' },
-  ];
-
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
@@ -321,15 +325,15 @@ function BeforeAfter() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {items.map((item, i) => (
+          {BEFORE_AFTER_ITEMS.map((item, i) => (
             <div key={i} className="rounded-xl overflow-hidden shadow-lg">
               <div className="grid grid-cols-2">
                 <div className="relative">
-                  <img src={item.before} alt="Room before LuxDrape curtain installation in Bihar" className="w-full h-48 md:h-64 object-cover" loading="lazy" />
+                  <img src={item.before} alt="Room before LuxDrape curtain installation in Bihar" className="w-full h-48 md:h-64 object-cover" loading="lazy" width={600} height={400} />
                   <span className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">Before</span>
                 </div>
                 <div className="relative">
-                  <img src={item.after} alt="Room after LuxDrape curtain installation in Begusarai" className="w-full h-48 md:h-64 object-cover" loading="lazy" />
+                  <img src={item.after} alt="Room after LuxDrape curtain installation in Begusarai" className="w-full h-48 md:h-64 object-cover" loading="lazy" width={600} height={400} />
                   <span className="absolute bottom-2 left-2 bg-gold-600 text-white text-xs px-2 py-1 rounded">After</span>
                 </div>
               </div>
@@ -370,7 +374,7 @@ function InstallationShowcase() {
             </Link>
           </div>
           <div className="relative">
-            <img src={STOCK_IMAGES.elegant} alt="Professional curtain installation service in Begusarai Bihar" className="rounded-xl shadow-xl w-full" loading="lazy" />
+            <img src={STOCK_IMAGES.elegant} alt="Professional curtain installation service in Begusarai Bihar" className="rounded-xl shadow-xl w-full" loading="lazy" width={1024} height={682} />
             <div className="absolute -bottom-4 -left-4 bg-white p-4 rounded-xl shadow-lg">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gold-100 rounded-full flex items-center justify-center">

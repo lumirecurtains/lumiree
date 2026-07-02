@@ -1,11 +1,13 @@
 import { MessageSquare, Mail, Phone, Clock } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
+import type { ChangeEvent } from 'react';
+import type { Inquiry } from '@/lib/types';
 import toast from 'react-hot-toast';
 
 export default function AdminInquiries() {
   const { inquiries, updateInquiryStatus } = useStore();
 
-  const handleStatusChange = async (id: string, status: any) => {
+  const handleStatusChange = async (id: string, status: Inquiry['status']) => {
     try {
       await updateInquiryStatus(id, status);
       toast.success(`Status updated to ${status}`);
@@ -15,14 +17,14 @@ export default function AdminInquiries() {
     }
   };
 
-  const statusColors: Record<string, string> = {
+  const statusColors: Record<Inquiry['status'], string> = {
     new: 'bg-amber-100 text-amber-700',
     'in-progress': 'bg-blue-100 text-blue-700',
     completed: 'bg-green-100 text-green-700',
     closed: 'bg-stone-100 text-stone-700',
   };
 
-  const typeIcons: Record<string, string> = {
+  const typeIcons: Record<Inquiry['type'], string> = {
     product: '🛒',
     quote: '📋',
     installation: '🔧',
@@ -61,7 +63,7 @@ export default function AdminInquiries() {
                 <div className="flex items-center gap-2">
                   <select
                     value={inq.status}
-                    onChange={e => handleStatusChange(inq.id, e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => handleStatusChange(inq.id, e.target.value as Inquiry['status'])}
                     className={`text-xs px-2 py-1 rounded-full font-medium border-0 ${statusColors[inq.status]}`}
                   >
                     <option value="new">New</option>

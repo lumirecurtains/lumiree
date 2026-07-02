@@ -1,19 +1,16 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { 
-  collection, 
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
+import {
+  collection,
   doc,
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
+  addDoc,
+  updateDoc,
+  deleteDoc,
   onSnapshot,
   setDoc,
   getDoc,
-  query,
-  orderBy,
-  serverTimestamp,
-  Timestamp
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useAuth } from '@/contexts/AuthContext';
 import { Product, Testimonial, FAQ, Inquiry, ContactInfo, Review } from '@/lib/types';
 import { SAMPLE_PRODUCTS, SAMPLE_TESTIMONIALS, SAMPLE_FAQS, WHATSAPP_NUMBER, PHONE_NUMBER, BUSINESS_EMAIL, BUSINESS_ADDRESS } from '@/lib/constants';
 
@@ -74,10 +71,12 @@ function loadFromStorage<T>(key: string, fallback: T): T {
   }
 }
 
-function saveToStorage(key: string, data: any) {
+function saveToStorage(key: string, data: unknown) {
   try {
     localStorage.setItem(`luxdrape_${key}`, JSON.stringify(data));
-  } catch {}
+  } catch {
+    // localStorage unavailable (private mode/quota) — safe to ignore
+  }
 }
 
 const defaultContactInfo: ContactInfo = {
@@ -98,6 +97,7 @@ const defaultContactInfo: ContactInfo = {
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {
+  const { isAdmin } = useAuth();
   // Firestore-backed state
   const [products, setProducts] = useState<Product[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -120,8 +120,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   // ============================================
 
   useEffect(() => {
-    console.log('🔥 Setting up Firestore listeners...');
-    
     // Products listener
     const productsUnsubscribe = onSnapshot(
       collection(db, 'products'),
@@ -130,11 +128,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         snapshot.forEach((doc) => {
           productsData.push({ id: doc.id, ...doc.data() } as Product);
         });
-        console.log(`📦 Products loaded from Firestore: ${productsData.length}`);
-        
-        // If no products in Firestore, seed with sample data
+
         if (productsData.length === 0) {
-          console.log('📦 No products found, using sample data...');
           setProducts(SAMPLE_PRODUCTS);
         } else {
           setProducts(productsData);
@@ -142,7 +137,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       },
       (error) => {
         console.error('❌ Products listener error:', error);
-        // Fallback to sample data on error
         setProducts(SAMPLE_PRODUCTS);
       }
     );
@@ -155,8 +149,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         snapshot.forEach((doc) => {
           testimonialsData.push({ id: doc.id, ...doc.data() } as Testimonial);
         });
-        console.log(`⭐ Testimonials loaded from Firestore: ${testimonialsData.length}`);
-        
+
         if (testimonialsData.length === 0) {
           setTestimonials(SAMPLE_TESTIMONIALS);
         } else {
@@ -177,8 +170,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         snapshot.forEach((doc) => {
           faqsData.push({ id: doc.id, ...doc.data() } as FAQ);
         });
-        console.log(`❓ FAQs loaded from Firestore: ${faqsData.length}`);
-        
+
         if (faqsData.length === 0) {
           setFaqs(SAMPLE_FAQS);
         } else {
@@ -191,36 +183,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    // Inquiries listener
-    const inquiriesUnsubscribe = onSnapshot(
-      collection(db, 'inquiries'),
-      (snapshot) => {
-        const inquiriesData: Inquiry[] = [];
-        snapshot.forEach((doc) => {
-          inquiriesData.push({ id: doc.id, ...doc.data() } as Inquiry);
-        });
-        // Sort by createdAt descending
-        inquiriesData.sort((a, b) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        console.log(`📩 Inquiries loaded from Firestore: ${inquiriesData.length}`);
-        setInquiries(inquiriesData);
-      },
-      (error) => {
-        console.error('❌ Inquiries listener error:', error);
-        setInquiries([]);
-      }
-    );
-
     // Contact Info listener (single document)
     const contactInfoUnsubscribe = onSnapshot(
       doc(db, 'settings', 'contactInfo'),
       (docSnapshot) => {
         if (docSnapshot.exists()) {
-          console.log('📞 Contact info loaded from Firestore');
           setContactInfo(docSnapshot.data() as ContactInfo);
         } else {
-          console.log('📞 No contact info found, using defaults');
           setContactInfo(defaultContactInfo);
         }
         setLoading(false);
@@ -243,7 +212,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         reviewsData.sort((a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-        console.log(`📝 Reviews loaded from Firestore: ${reviewsData.length}`);
         setReviews(reviewsData);
       },
       (error) => {
@@ -254,15 +222,43 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     // Cleanup listeners on unmount
     return () => {
-      console.log('🔥 Cleaning up Firestore listeners...');
       productsUnsubscribe();
       testimonialsUnsubscribe();
       faqsUnsubscribe();
-      inquiriesUnsubscribe();
       contactInfoUnsubscribe();
       reviewsUnsubscribe();
     };
   }, []);
+
+  // Inquiries are admin-only (Firestore rules deny reads for everyone else).
+  // Subscribing only when the user is an admin avoids guaranteed
+  // permission-denied errors in every visitor's console.
+  useEffect(() => {
+    if (!isAdmin) {
+      setInquiries([]);
+      return;
+    }
+
+    const inquiriesUnsubscribe = onSnapshot(
+      collection(db, 'inquiries'),
+      (snapshot) => {
+        const inquiriesData: Inquiry[] = [];
+        snapshot.forEach((docSnapshot) => {
+          inquiriesData.push({ id: docSnapshot.id, ...docSnapshot.data() } as Inquiry);
+        });
+        inquiriesData.sort((a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setInquiries(inquiriesData);
+      },
+      (error) => {
+        console.error('Inquiries listener error:', error);
+        setInquiries([]);
+      }
+    );
+
+    return () => inquiriesUnsubscribe();
+  }, [isAdmin]);
 
   // ============================================
   // PRODUCT OPERATIONS
@@ -270,41 +266,35 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addProduct = useCallback(async (product: Product) => {
     try {
-      console.log('📦 Adding product to Firestore:', product.name);
-      const { id, ...productData } = product;
-      const docRef = await addDoc(collection(db, 'products'), {
+      const { id: _id, ...productData } = product;
+      await addDoc(collection(db, 'products'), {
         ...productData,
         createdAt: new Date().toISOString(),
       });
-      console.log('✅ Product added with ID:', docRef.id);
     } catch (error) {
-      console.error('❌ Error adding product:', error);
+      console.error('Error adding product:', error);
       throw error;
     }
   }, []);
 
   const updateProduct = useCallback(async (id: string, updates: Partial<Product>) => {
     try {
-      console.log('📦 Updating product in Firestore:', id);
       const productRef = doc(db, 'products', id);
       await updateDoc(productRef, {
         ...updates,
         updatedAt: new Date().toISOString(),
       });
-      console.log('✅ Product updated:', id);
     } catch (error) {
-      console.error('❌ Error updating product:', error);
+      console.error('Error updating product:', error);
       throw error;
     }
   }, []);
 
   const deleteProduct = useCallback(async (id: string) => {
     try {
-      console.log('📦 Deleting product from Firestore:', id);
       await deleteDoc(doc(db, 'products', id));
-      console.log('✅ Product deleted:', id);
     } catch (error) {
-      console.error('❌ Error deleting product:', error);
+      console.error('Error deleting product:', error);
       throw error;
     }
   }, []);
@@ -315,35 +305,29 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addTestimonial = useCallback(async (testimonial: Testimonial) => {
     try {
-      console.log('⭐ Adding testimonial to Firestore:', testimonial.name);
-      const { id, ...testimonialData } = testimonial;
+      const { id: _id, ...testimonialData } = testimonial;
       await addDoc(collection(db, 'testimonials'), testimonialData);
-      console.log('✅ Testimonial added');
     } catch (error) {
-      console.error('❌ Error adding testimonial:', error);
+      console.error('Error adding testimonial:', error);
       throw error;
     }
   }, []);
 
   const updateTestimonial = useCallback(async (id: string, updates: Partial<Testimonial>) => {
     try {
-      console.log('⭐ Updating testimonial in Firestore:', id);
       const testimonialRef = doc(db, 'testimonials', id);
       await updateDoc(testimonialRef, updates);
-      console.log('✅ Testimonial updated:', id);
     } catch (error) {
-      console.error('❌ Error updating testimonial:', error);
+      console.error('Error updating testimonial:', error);
       throw error;
     }
   }, []);
 
   const deleteTestimonial = useCallback(async (id: string) => {
     try {
-      console.log('⭐ Deleting testimonial from Firestore:', id);
       await deleteDoc(doc(db, 'testimonials', id));
-      console.log('✅ Testimonial deleted:', id);
     } catch (error) {
-      console.error('❌ Error deleting testimonial:', error);
+      console.error('Error deleting testimonial:', error);
       throw error;
     }
   }, []);
@@ -354,35 +338,29 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addFaq = useCallback(async (faq: FAQ) => {
     try {
-      console.log('❓ Adding FAQ to Firestore:', faq.question);
-      const { id, ...faqData } = faq;
+      const { id: _id, ...faqData } = faq;
       await addDoc(collection(db, 'faqs'), faqData);
-      console.log('✅ FAQ added');
     } catch (error) {
-      console.error('❌ Error adding FAQ:', error);
+      console.error('Error adding FAQ:', error);
       throw error;
     }
   }, []);
 
   const updateFaq = useCallback(async (id: string, updates: Partial<FAQ>) => {
     try {
-      console.log('❓ Updating FAQ in Firestore:', id);
       const faqRef = doc(db, 'faqs', id);
       await updateDoc(faqRef, updates);
-      console.log('✅ FAQ updated:', id);
     } catch (error) {
-      console.error('❌ Error updating FAQ:', error);
+      console.error('Error updating FAQ:', error);
       throw error;
     }
   }, []);
 
   const deleteFaq = useCallback(async (id: string) => {
     try {
-      console.log('❓ Deleting FAQ from Firestore:', id);
       await deleteDoc(doc(db, 'faqs', id));
-      console.log('✅ FAQ deleted:', id);
     } catch (error) {
-      console.error('❌ Error deleting FAQ:', error);
+      console.error('Error deleting FAQ:', error);
       throw error;
     }
   }, []);
@@ -393,27 +371,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addInquiry = useCallback(async (inquiry: Inquiry) => {
     try {
-      console.log('📩 Adding inquiry to Firestore:', inquiry.type);
-      const { id, ...inquiryData } = inquiry;
+      const { id: _id, ...inquiryData } = inquiry;
       await addDoc(collection(db, 'inquiries'), {
         ...inquiryData,
         createdAt: new Date().toISOString(),
       });
-      console.log('✅ Inquiry added');
     } catch (error) {
-      console.error('❌ Error adding inquiry:', error);
+      console.error('Error adding inquiry:', error);
       throw error;
     }
   }, []);
 
   const updateInquiryStatus = useCallback(async (id: string, status: Inquiry['status']) => {
     try {
-      console.log('📩 Updating inquiry status in Firestore:', id, status);
       const inquiryRef = doc(db, 'inquiries', id);
       await updateDoc(inquiryRef, { status });
-      console.log('✅ Inquiry status updated:', id);
     } catch (error) {
-      console.error('❌ Error updating inquiry status:', error);
+      console.error('Error updating inquiry status:', error);
       throw error;
     }
   }, []);
@@ -424,7 +398,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const updateContactInfo = useCallback(async (info: Partial<ContactInfo>) => {
     try {
-      console.log('📞 Updating contact info in Firestore');
       const contactRef = doc(db, 'settings', 'contactInfo');
       const currentDoc = await getDoc(contactRef);
       
@@ -433,9 +406,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       } else {
         await setDoc(contactRef, { ...defaultContactInfo, ...info });
       }
-      console.log('✅ Contact info updated');
     } catch (error) {
-      console.error('❌ Error updating contact info:', error);
+      console.error('Error updating contact info:', error);
       throw error;
     }
   }, []);
@@ -446,10 +418,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addReview = useCallback(async (review: Review) => {
     try {
-      console.log('📝 Adding review to Firestore:', review.userName);
-      
-      // Build a clean document — Firestore rejects undefined values
-      const reviewDoc: Record<string, any> = {
+      const reviewDoc: Record<string, unknown> = {
         userName: review.userName,
         userEmail: review.userEmail || '',
         rating: review.rating,
@@ -460,44 +429,36 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         createdAt: new Date().toISOString(),
       };
       
-      // Only include productName if it actually exists
       if (review.productName) {
         reviewDoc.productName = review.productName;
       }
 
-      console.log('📝 Review document to write:', JSON.stringify(reviewDoc));
-      const docRef = await addDoc(collection(db, 'reviews'), reviewDoc);
-      console.log('✅ Review submitted for approval, ID:', docRef.id);
+      await addDoc(collection(db, 'reviews'), reviewDoc);
     } catch (error) {
-      console.error('❌ Error adding review to Firestore:', error);
+      console.error('Error adding review to Firestore:', error);
       throw error;
     }
   }, []);
 
   const updateReview = useCallback(async (id: string, updates: Partial<Review>) => {
     try {
-      console.log('📝 Updating review in Firestore:', id);
-      // Sanitize: replace undefined values with empty strings for Firestore
-      const cleanUpdates: Record<string, any> = {};
+      const cleanUpdates: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(updates)) {
         cleanUpdates[key] = value === undefined ? '' : value;
       }
       const reviewRef = doc(db, 'reviews', id);
       await updateDoc(reviewRef, cleanUpdates);
-      console.log('✅ Review updated:', id);
     } catch (error) {
-      console.error('❌ Error updating review:', error);
+      console.error('Error updating review:', error);
       throw error;
     }
   }, []);
 
   const deleteReview = useCallback(async (id: string) => {
     try {
-      console.log('📝 Deleting review from Firestore:', id);
       await deleteDoc(doc(db, 'reviews', id));
-      console.log('✅ Review deleted:', id);
     } catch (error) {
-      console.error('❌ Error deleting review:', error);
+      console.error('Error deleting review:', error);
       throw error;
     }
   }, []);
@@ -555,20 +516,84 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     );
   }, [products]);
 
+  const storeValue = useMemo(() => ({
+    products,
+    testimonials,
+    faqs,
+    inquiries,
+    reviews,
+    wishlist,
+    recentlyViewed,
+    contactInfo,
+    loading,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    addTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+    addFaq,
+    updateFaq,
+    deleteFaq,
+    addInquiry,
+    updateInquiryStatus,
+    addReview,
+    updateReview,
+    deleteReview,
+    getApprovedReviews,
+    getReviewsByProduct,
+    getAverageRating,
+    toggleWishlist,
+    addToRecentlyViewed,
+    updateContactInfo,
+    getProductBySlug,
+    getProductById,
+    getProductsByCategory,
+    getFeaturedProducts,
+    getBestSellers,
+    getNewArrivals,
+    searchProducts,
+  }), [
+    products,
+    testimonials,
+    faqs,
+    inquiries,
+    reviews,
+    wishlist,
+    recentlyViewed,
+    contactInfo,
+    loading,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    addTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+    addFaq,
+    updateFaq,
+    deleteFaq,
+    addInquiry,
+    updateInquiryStatus,
+    addReview,
+    updateReview,
+    deleteReview,
+    getApprovedReviews,
+    getReviewsByProduct,
+    getAverageRating,
+    toggleWishlist,
+    addToRecentlyViewed,
+    updateContactInfo,
+    getProductBySlug,
+    getProductById,
+    getProductsByCategory,
+    getFeaturedProducts,
+    getBestSellers,
+    getNewArrivals,
+    searchProducts,
+  ]);
+
   return (
-    <StoreContext.Provider value={{
-      products, testimonials, faqs, inquiries, reviews,
-      wishlist, recentlyViewed, contactInfo, loading,
-      addProduct, updateProduct, deleteProduct,
-      addTestimonial, updateTestimonial, deleteTestimonial,
-      addFaq, updateFaq, deleteFaq,
-      addInquiry, updateInquiryStatus,
-      addReview, updateReview, deleteReview,
-      getApprovedReviews, getReviewsByProduct, getAverageRating,
-      toggleWishlist, addToRecentlyViewed, updateContactInfo,
-      getProductBySlug, getProductById, getProductsByCategory,
-      getFeaturedProducts, getBestSellers, getNewArrivals, searchProducts,
-    }}>
+    <StoreContext.Provider value={storeValue}>
       {children}
     </StoreContext.Provider>
   );

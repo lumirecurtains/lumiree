@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Star, Eye } from 'lucide-react';
 import { Product } from '@/lib/types';
@@ -9,7 +10,7 @@ interface Props {
   className?: string;
 }
 
-export default function ProductCard({ product, className = '' }: Props) {
+function ProductCard({ product, className = '' }: Props) {
   const { wishlist, toggleWishlist } = useStore();
   const isWished = wishlist.includes(product.id);
   const discount = product.salePrice ? Math.round((1 - product.salePrice / product.price) * 100) : 0;
@@ -22,6 +23,8 @@ export default function ProductCard({ product, className = '' }: Props) {
           alt={`${product.name} - Premium Curtain`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          width={400}
+          height={500}
         />
         
         {/* Badges */}
@@ -104,3 +107,5 @@ export default function ProductCard({ product, className = '' }: Props) {
     </div>
   );
 }
+
+export default memo(ProductCard);

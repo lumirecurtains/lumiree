@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Plus, Edit, Trash2, Copy, Eye, Search, Star, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Copy, Search, Star, X } from 'lucide-react';
 import { useStore } from '@/contexts/StoreContext';
 import { Product } from '@/lib/types';
 import { CATEGORIES, MATERIALS, COLORS, STOCK_IMAGES } from '@/lib/constants';
 import toast from 'react-hot-toast';
 import { formatINR } from '@/utils/currency';
+
+type AdminProductForm = Omit<Product, 'id'> & { id?: string };
 
 function generateDescription(name: string, category: string, material: string, color: string) {
   return {
@@ -27,7 +29,7 @@ export default function AdminProducts() {
   const { products, addProduct, updateProduct, deleteProduct } = useStore();
   const [editing, setEditing] = useState<Product | null>(null);
   const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState<any>(emptyProduct);
+  const [form, setForm] = useState<AdminProductForm>(emptyProduct);
   const [search, setSearch] = useState('');
   const [colorInput, setColorInput] = useState('');
   const [sizeInput, setSizeInput] = useState('');
@@ -209,7 +211,7 @@ export default function AdminProducts() {
             <div className="flex flex-wrap gap-2 mb-2">
               {(form.colors || []).map((c: string, i: number) => (
                 <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 rounded text-sm">
-                  {c} <button onClick={() => setForm({...form, colors: form.colors.filter((_:any, idx:number) => idx !== i)})} className="text-stone-400 hover:text-red-500"><X className="w-3 h-3" /></button>
+                  {c} <button onClick={() => setForm({...form, colors: form.colors.filter((_: string, idx: number) => idx !== i)})} className="text-stone-400 hover:text-red-500"><X className="w-3 h-3" /></button>
                 </span>
               ))}
             </div>
@@ -228,7 +230,7 @@ export default function AdminProducts() {
             <div className="flex flex-wrap gap-2 mb-2">
               {(form.sizes || []).map((s: string, i: number) => (
                 <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 rounded text-sm">
-                  {s} <button onClick={() => setForm({...form, sizes: form.sizes.filter((_:any, idx:number) => idx !== i)})} className="text-stone-400 hover:text-red-500"><X className="w-3 h-3" /></button>
+                  {s} <button onClick={() => setForm({...form, sizes: form.sizes.filter((_: string, idx: number) => idx !== i)})} className="text-stone-400 hover:text-red-500"><X className="w-3 h-3" /></button>
                 </span>
               ))}
             </div>
@@ -245,7 +247,7 @@ export default function AdminProducts() {
               {(form.images || []).map((img: string, i: number) => (
                 <div key={i} className="relative group aspect-square rounded-lg overflow-hidden bg-stone-100">
                   <img src={img} alt="" className="w-full h-full object-cover" />
-                  <button onClick={() => setForm({...form, images: form.images.filter((_:any, idx:number) => idx !== i)})} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => setForm({...form, images: form.images.filter((_: string, idx: number) => idx !== i)})} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <X className="w-3 h-3" />
                   </button>
                 </div>
@@ -263,7 +265,7 @@ export default function AdminProducts() {
             <div className="flex flex-wrap gap-2 mb-2">
               {(form.tags || []).map((t: string, i: number) => (
                 <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-gold-100 text-gold-700 rounded text-sm">
-                  #{t} <button onClick={() => setForm({...form, tags: form.tags.filter((_:any, idx:number) => idx !== i)})} className="text-gold-400 hover:text-red-500"><X className="w-3 h-3" /></button>
+                  #{t} <button onClick={() => setForm({...form, tags: form.tags.filter((_: string, idx: number) => idx !== i)})} className="text-gold-400 hover:text-red-500"><X className="w-3 h-3" /></button>
                 </span>
               ))}
             </div>
@@ -277,13 +279,20 @@ export default function AdminProducts() {
           <div>
             <h3 className="font-semibold text-stone-900 mb-3">Product Flags</h3>
             <div className="flex flex-wrap gap-4">
-              {[
-                { key: 'featured', label: 'Featured' },
-                { key: 'bestSeller', label: 'Best Seller' },
-                { key: 'newArrival', label: 'New Arrival' },
-              ].map(flag => (
+              {(
+                [
+                  { key: 'featured', label: 'Featured' },
+                  { key: 'bestSeller', label: 'Best Seller' },
+                  { key: 'newArrival', label: 'New Arrival' },
+                ] as const
+              ).map(flag => (
                 <label key={flag.key} className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={form[flag.key]} onChange={e => setForm({...form, [flag.key]: e.target.checked})} className="rounded" />
+                  <input
+                    type="checkbox"
+                    checked={form[flag.key]}
+                    onChange={e => setForm(prev => ({ ...prev, [flag.key]: e.target.checked }))}
+                    className="rounded"
+                  />
                   {flag.label}
                 </label>
               ))}

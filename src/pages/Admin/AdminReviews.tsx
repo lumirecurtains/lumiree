@@ -26,7 +26,7 @@ export default function AdminReviews() {
     try {
       await updateReview(id, { status: 'approved' });
       toast.success('Review approved and is now visible on the website.');
-    } catch (error) {
+    } catch {
       toast.error('Failed to approve review.');
     }
   };
@@ -35,7 +35,7 @@ export default function AdminReviews() {
     try {
       await updateReview(id, { status: 'rejected' });
       toast.success('Review rejected.');
-    } catch (error) {
+    } catch {
       toast.error('Failed to reject review.');
     }
   };
@@ -45,7 +45,7 @@ export default function AdminReviews() {
     try {
       await deleteReview(id);
       toast.success('Review deleted.');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete review.');
     }
   };
@@ -61,7 +61,7 @@ export default function AdminReviews() {
       await updateReview(editing.id, editForm);
       toast.success('Review updated.');
       setEditing(null);
-    } catch (error) {
+    } catch {
       toast.error('Failed to update review.');
     }
   };

@@ -7,14 +7,11 @@ import toast from 'react-hot-toast';
 import { formatINR } from '@/utils/currency';
 
 export default function Installation() {
-  const { addInquiry, contactInfo } = useStore();
+  const { addInquiry } = useStore();
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', date: '', notes: '' });
-
-  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     try {
       await addInquiry({
         id: `inq-${Date.now()}`, type: 'installation', name: form.name, email: form.email, phone: form.phone,
@@ -27,7 +24,6 @@ export default function Installation() {
       console.error('Error submitting request:', error);
       toast.error('Failed to submit. Please try again.');
     }
-    setSubmitting(false);
   };
 
   return (
