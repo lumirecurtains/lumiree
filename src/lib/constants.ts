@@ -1,7 +1,7 @@
 export const SUPER_ADMIN_EMAIL = 'lexcorp0777@gmail.com';
 
-export const WHATSAPP_NUMBER = '+1234567890';
-export const PHONE_NUMBER = '+1234567890';
+export const WHATSAPP_NUMBER = '+91 00000 00000';
+export const PHONE_NUMBER = '+91 00000 00000';
 export const BUSINESS_EMAIL = 'info@lumivra.com';
 export const BUSINESS_ADDRESS = 'Main Road, Begusarai, Bihar 851101, India';
 export const BUSINESS_NAME = 'Lumivra';

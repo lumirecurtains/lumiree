@@ -6,7 +6,7 @@ import SEOHead from '@/components/SEOHead';
 export default function About() {
   return (
     <div>
-      <SEOHead title="About Lumivra — Premium Curtain Store in Begusarai, Bihar" description="Lumivra is Begusarai's premier curtain store. 15+ years of excellence crafting luxury curtains with 200+ fabrics. Serving Bihar with expert installation." canonical="/about" />
+      <SEOHead title="About Lumivra — Curtain Manufacturer & Bulk Stitching Unit in Begusarai, Bihar" description="Lumivra is Begusarai's trusted curtain manufacturer and bulk stitching unit. We supply shops & dealers with expertly stitched custom curtains, plus home installation across Bihar." canonical="/about" />
       {/* Hero */}
       <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
         <img src={STOCK_IMAGES.elegant} alt="Lumivra curtain showroom in Begusarai Bihar" className="w-full h-full object-cover" />
@@ -36,10 +36,17 @@ export default function About() {
                 serve thousands of homes, hotels, and offices across Begusarai, Patna, Muzaffarpur, Darbhanga, Bhagalpur, 
                 Gaya, and every corner of Bihar with our premium curtain collections.
               </p>
-              <p className="text-stone-600 leading-relaxed">
+              <p className="text-stone-600 leading-relaxed mb-4">
                 Every curtain we create undergoes rigorous quality checks, from fabric selection to stitching perfection. 
                 We source our materials from the finest textile mills, ensuring that each piece delivers on our promise of 
                 luxury, durability, and timeless elegance.
+              </p>
+              <p className="text-stone-600 leading-relaxed">
+                <strong className="text-stone-900">For shops, dealers & retailers:</strong> Lumivra is also a trusted 
+                bulk curtain stitching and manufacturing partner. Shops across Bihar send us fabric in bulk, and our 
+                expert unit stitches, designs, and finishes curtains to exact specifications — delivered on time, every 
+                time. We also provide professional home curtain installation on request. Contact us for wholesale 
+                job-work rates.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">

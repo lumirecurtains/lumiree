@@ -109,6 +109,32 @@ function HeroSection() {
   );
 }
 
+function WholesaleBanner() {
+  const { contactInfo } = useStore();
+  const cleanNumber = (n: string) => n.replace(/[^0-9]/g, '');
+
+  return (
+    <section className="bg-stone-900 border-b border-stone-800">
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 text-center md:text-left">
+          <p className="text-sm md:text-base text-white">
+            <span className="font-semibold text-gold-400">Shops & Dealers:</span>{' '}
+            Bulk curtain stitching & manufacturing — custom designs, expert finishing, on-time delivery.
+          </p>
+          <a
+            href={`https://wa.me/${cleanNumber(contactInfo.whatsappBulk)}?text=Hi! I'm a dealer/shop owner. I'd like to discuss bulk curtain stitching orders.`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-gold-600 hover:bg-gold-700 text-white text-sm font-semibold rounded-lg transition-colors"
+          >
+            Bulk Order Inquiry <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function TrustBadges() {
   const badges = [
     { icon: Truck, title: 'Free Shipping', desc: `On orders over ${formatINR(5000)}` },
@@ -502,6 +528,7 @@ export default function Home() {
         canonical="/"
       />
       <HeroSection />
+      <WholesaleBanner />
       <TrustBadges />
       <CategoriesSection />
       <FeaturedProducts />
