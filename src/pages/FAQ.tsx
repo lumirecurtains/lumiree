@@ -19,7 +19,7 @@ export default function FAQ() {
 
   return (
     <div>
-      <SEOHead title="FAQ — Curtain Questions Answered | LuxDrape Begusarai" description="Find answers about curtain types, custom orders, measurements, installation, delivery, pricing, care & returns. LuxDrape — Begusarai's curtain experts." canonical="/faq" jsonLd={faqSchema} />
+      <SEOHead title="FAQ — Curtain Questions Answered | Lumivra Begusarai" description="Find answers about curtain types, custom orders, measurements, installation, delivery, pricing, care & returns. Lumivra — Begusarai's curtain experts." canonical="/faq" jsonLd={faqSchema} />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Help Center</p>

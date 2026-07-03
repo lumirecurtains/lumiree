@@ -64,7 +64,7 @@ export function useStore() {
 // Local storage helpers for user-specific data (wishlist, recently viewed)
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
-    const stored = localStorage.getItem(`luxdrape_${key}`);
+    const stored = localStorage.getItem(`lumivra_${key}`);
     return stored ? JSON.parse(stored) : fallback;
   } catch {
     return fallback;
@@ -73,7 +73,7 @@ function loadFromStorage<T>(key: string, fallback: T): T {
 
 function saveToStorage(key: string, data: unknown) {
   try {
-    localStorage.setItem(`luxdrape_${key}`, JSON.stringify(data));
+    localStorage.setItem(`lumivra_${key}`, JSON.stringify(data));
   } catch {
     // localStorage unavailable (private mode/quota) — safe to ignore
   }
@@ -89,10 +89,10 @@ const defaultContactInfo: ContactInfo = {
   businessHours: 'Mon-Sat: 9:00 AM - 7:00 PM | Sun: 10:00 AM - 5:00 PM',
   mapUrl: 'https://www.google.com/maps?q=Begusarai+Bihar+India',
   socialMedia: {
-    facebook: 'https://facebook.com/luxdrape',
-    instagram: 'https://instagram.com/luxdrape',
-    pinterest: 'https://pinterest.com/luxdrape',
-    youtube: 'https://youtube.com/luxdrape',
+    facebook: 'https://facebook.com/lumivra',
+    instagram: 'https://instagram.com/lumivra',
+    pinterest: 'https://pinterest.com/lumivra',
+    youtube: 'https://youtube.com/lumivra',
   },
 };
 

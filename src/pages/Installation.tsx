@@ -28,7 +28,7 @@ export default function Installation() {
 
   return (
     <div>
-      <SEOHead title="Curtain Installation Service in Begusarai & Bihar | LuxDrape" description="Professional curtain installation in Begusarai, Patna & across Bihar. Free measurement, rod fitting, curtain hanging & styling. Book online or via WhatsApp." canonical="/installation" />
+      <SEOHead title="Curtain Installation Service in Begusarai & Bihar | Lumivra" description="Professional curtain installation in Begusarai, Patna & across Bihar. Free measurement, rod fitting, curtain hanging & styling. Book online or via WhatsApp." canonical="/installation" />
       <div className="relative h-[40vh] overflow-hidden">
         <img src={STOCK_IMAGES.elegant} alt="Professional curtain installation in Begusarai Bihar" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/50" />

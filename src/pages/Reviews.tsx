@@ -77,7 +77,7 @@ export default function Reviews() {
   const reviewSchema: Record<string, unknown> | undefined = count > 0 ? {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "LuxDrape",
+    "name": "Lumivra",
     "description": "Premium Luxury Curtains & Window Treatments in Begusarai, Bihar",
     "address": { "@type": "PostalAddress", "addressLocality": "Begusarai", "addressRegion": "Bihar", "addressCountry": "IN" },
     "aggregateRating": {
@@ -100,8 +100,8 @@ export default function Reviews() {
   return (
     <div>
       <SEOHead
-        title={`Customer Reviews${count > 0 ? ` — ${avg}★ Rating` : ''} | LuxDrape Begusarai`}
-        description={`Read ${count > 0 ? count : ''} genuine customer reviews of LuxDrape curtains. ${count > 0 ? `Rated ${avg}/5 stars.` : ''} Premium curtain store in Begusarai, Bihar.`}
+        title={`Customer Reviews${count > 0 ? ` — ${avg}★ Rating` : ''} | Lumivra Begusarai`}
+        description={`Read ${count > 0 ? count : ''} genuine customer reviews of Lumivra curtains. ${count > 0 ? `Rated ${avg}/5 stars.` : ''} Premium curtain store in Begusarai, Bihar.`}
         canonical="/reviews"
         jsonLd={reviewSchema}
       />
@@ -239,7 +239,7 @@ export default function Reviews() {
           <div className="text-center py-12">
             <Star className="w-12 h-12 text-stone-200 mx-auto mb-3" />
             <h3 className="font-heading text-lg font-semibold text-stone-900 mb-1">No Reviews Yet</h3>
-            <p className="text-stone-500 text-sm">Be the first to share your experience with LuxDrape curtains!</p>
+            <p className="text-stone-500 text-sm">Be the first to share your experience with Lumivra curtains!</p>
           </div>
         )}
       </div>

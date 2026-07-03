@@ -5,7 +5,7 @@ import SEOHead from '@/components/SEOHead';
 export default function NotFound() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center bg-stone-50 px-4">
-      <SEOHead title="Page Not Found | LuxDrape" description="The page you are looking for does not exist." noindex />
+      <SEOHead title="Page Not Found | Lumivra" description="The page you are looking for does not exist." noindex />
       <div className="text-center">
         <p className="text-8xl mb-4">🪟</p>
         <h1 className="font-heading text-4xl md:text-5xl font-bold text-stone-900 mb-4">Page Not Found</h1>

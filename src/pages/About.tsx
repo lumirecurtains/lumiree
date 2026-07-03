@@ -6,15 +6,15 @@ import SEOHead from '@/components/SEOHead';
 export default function About() {
   return (
     <div>
-      <SEOHead title="About LuxDrape — Premium Curtain Store in Begusarai, Bihar" description="LuxDrape is Begusarai's premier curtain store. 15+ years of excellence crafting luxury curtains with 200+ fabrics. Serving Bihar with expert installation." canonical="/about" />
+      <SEOHead title="About Lumivra — Premium Curtain Store in Begusarai, Bihar" description="Lumivra is Begusarai's premier curtain store. 15+ years of excellence crafting luxury curtains with 200+ fabrics. Serving Bihar with expert installation." canonical="/about" />
       {/* Hero */}
       <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
-        <img src={STOCK_IMAGES.elegant} alt="LuxDrape curtain showroom in Begusarai Bihar" className="w-full h-full object-cover" />
+        <img src={STOCK_IMAGES.elegant} alt="Lumivra curtain showroom in Begusarai Bihar" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex items-center justify-center text-center">
           <div>
             <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Our Story</p>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white">About LuxDrape</h1>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white">About Lumivra</h1>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@ export default function About() {
               <p className="text-gold-600 text-sm tracking-[0.3em] uppercase mb-2">Since 2010 • Begusarai, Bihar</p>
               <h2 className="font-heading text-3xl md:text-4xl font-bold text-stone-900 mb-6">Crafting Elegance for Every Window in Bihar</h2>
               <p className="text-stone-600 leading-relaxed mb-4">
-                Founded in Begusarai, LuxDrape was built with a singular vision: to bring world-class curtain craftsmanship to 
+                Founded in Begusarai, Lumivra was built with a singular vision: to bring world-class curtain craftsmanship to 
                 homes and businesses across Bihar. We believe the right curtains don't just dress a window — they define a 
                 room's character, mood, and personality.
               </p>
@@ -44,9 +44,9 @@ export default function About() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <img src={STOCK_IMAGES.velvet} alt="Premium velvet curtain fabric available in Begusarai" className="rounded-xl w-full h-48 md:h-64 object-cover" loading="lazy" />
-              <img src={STOCK_IMAGES.sheer} alt="Sheer curtain detail from LuxDrape Bihar" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
+              <img src={STOCK_IMAGES.sheer} alt="Sheer curtain detail from Lumivra Bihar" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
               <img src={STOCK_IMAGES.bedroom} alt="Bedroom curtain installation in Bihar" className="rounded-xl w-full h-48 md:h-64 object-cover" loading="lazy" />
-              <img src={STOCK_IMAGES.luxury} alt="Luxury curtain collection at LuxDrape Begusarai" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
+              <img src={STOCK_IMAGES.luxury} alt="Luxury curtain collection at Lumivra Begusarai" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-stone-900 mb-3">Our Promise</h2>
-            <p className="text-stone-500 max-w-2xl mx-auto">What sets LuxDrape apart in the world of window treatments.</p>
+            <p className="text-stone-500 max-w-2xl mx-auto">What sets Lumivra apart in the world of window treatments.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[

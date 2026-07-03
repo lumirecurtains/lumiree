@@ -9,8 +9,8 @@ export default function WhatsAppButton() {
   const { contactInfo } = useStore();
 
   const options = useMemo(() => [
-    { label: '🛒 Sales Inquiry', number: contactInfo.whatsappSales, msg: "Hi! I'm interested in purchasing curtains from LuxDrape." },
-    { label: '🔧 Support', number: contactInfo.whatsappSupport, msg: "Hi! I need support with my LuxDrape order." },
+    { label: '🛒 Sales Inquiry', number: contactInfo.whatsappSales, msg: "Hi! I'm interested in purchasing curtains from Lumivra." },
+    { label: '🔧 Support', number: contactInfo.whatsappSupport, msg: "Hi! I need support with my Lumivra order." },
     { label: '📦 Bulk Orders', number: contactInfo.whatsappBulk, msg: "Hi! I'd like to inquire about bulk curtain orders." },
     { label: '📐 Installation', number: contactInfo.whatsappSales, msg: "Hi! I'd like to book a curtain installation service." },
   ], [contactInfo.whatsappSales, contactInfo.whatsappSupport, contactInfo.whatsappBulk]);
@@ -22,7 +22,7 @@ export default function WhatsAppButton() {
           <div className="bg-green-600 px-4 py-3">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-white font-semibold text-sm">LuxDrape on WhatsApp</h4>
+                <h4 className="text-white font-semibold text-sm">Lumivra on WhatsApp</h4>
                 <p className="text-green-100 text-xs">Typically replies within minutes</p>
               </div>
               <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white">

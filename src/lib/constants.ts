@@ -2,9 +2,9 @@ export const SUPER_ADMIN_EMAIL = 'lexcorp0777@gmail.com';
 
 export const WHATSAPP_NUMBER = '+1234567890';
 export const PHONE_NUMBER = '+1234567890';
-export const BUSINESS_EMAIL = 'info@luxdrape.com';
+export const BUSINESS_EMAIL = 'info@lumivra.com';
 export const BUSINESS_ADDRESS = 'Main Road, Begusarai, Bihar 851101, India';
-export const BUSINESS_NAME = 'LuxDrape';
+export const BUSINESS_NAME = 'Lumivra';
 export const BUSINESS_TAGLINE = 'Premium Luxury Curtains & Window Treatments';
 export const BUSINESS_CITY = 'Begusarai';
 export const BUSINESS_STATE = 'Bihar';
@@ -398,7 +398,7 @@ export const SAMPLE_TESTIMONIALS = [
     id: 't2',
     name: 'James Anderson',
     role: 'Interior Designer',
-    text: 'As a designer, I recommend LuxDrape to all my clients. The fabric quality, stitching, and finishing are impeccable. Their custom service is truly bespoke.',
+    text: 'As a designer, I recommend Lumivra to all my clients. The fabric quality, stitching, and finishing are impeccable. Their custom service is truly bespoke.',
     rating: 5,
     image: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150',
     featured: true,
@@ -407,7 +407,7 @@ export const SAMPLE_TESTIMONIALS = [
     id: 't3',
     name: 'Emily Chen',
     role: 'Hotel Manager',
-    text: 'We outfitted our entire boutique hotel with LuxDrape curtains. The professional quality and elegant designs impress our guests every day. Outstanding service!',
+    text: 'We outfitted our entire boutique hotel with Lumivra curtains. The professional quality and elegant designs impress our guests every day. Outstanding service!',
     rating: 5,
     image: 'https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=150',
     featured: true,

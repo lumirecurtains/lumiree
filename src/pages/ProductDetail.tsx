@@ -61,7 +61,7 @@ export default function ProductDetail() {
           "name": product.name,
           "description": product.shortDescription,
           "image": product.images,
-          "brand": { "@type": "Brand", "name": "LuxDrape" },
+          "brand": { "@type": "Brand", "name": "Lumivra" },
           "category": product.category.replace('-', ' '),
           "material": product.material,
           "offers": {
@@ -70,7 +70,7 @@ export default function ProductDetail() {
             "priceCurrency": "INR",
             "price": product.salePrice || product.price,
             "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-            "seller": { "@type": "Organization", "name": "LuxDrape" },
+            "seller": { "@type": "Organization", "name": "Lumivra" },
             "areaServed": { "@type": "State", "name": "Bihar" }
           },
         },
@@ -100,7 +100,7 @@ export default function ProductDetail() {
   return (
     <div className="bg-stone-50">
       <SEOHead
-        title={`${product.name} | Buy Online in Begusarai, Bihar | LuxDrape`}
+        title={`${product.name} | Buy Online in Begusarai, Bihar | Lumivra`}
         description={`${product.shortDescription} Available in ${product.colors.join(', ')}. ${product.material} fabric. Buy online with free shipping across Bihar.`}
         canonical={`/product/${product.slug}`}
         ogImage={product.images[0]}

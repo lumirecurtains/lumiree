@@ -31,7 +31,7 @@ export default function Contact() {
 
   return (
     <div>
-      <SEOHead title="Contact LuxDrape — Curtain Shop in Begusarai, Bihar" description="Contact LuxDrape for curtain inquiries, custom orders, installation bookings. Visit our Begusarai showroom or reach us via WhatsApp. Serving all Bihar." canonical="/contact" />
+      <SEOHead title="Contact Lumivra — Curtain Shop in Begusarai, Bihar" description="Contact Lumivra for curtain inquiries, custom orders, installation bookings. Visit our Begusarai showroom or reach us via WhatsApp. Serving all Bihar." canonical="/contact" />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Get In Touch</p>
@@ -126,7 +126,7 @@ export default function Contact() {
           <div className="bg-stone-200 h-64 md:h-96 flex items-center justify-center text-stone-500">
             <div className="text-center">
               <MapPin className="w-12 h-12 mx-auto mb-2 text-gold-600" />
-              <p className="font-heading font-semibold text-lg text-stone-900">LuxDrape Showroom — Begusarai</p>
+              <p className="font-heading font-semibold text-lg text-stone-900">Lumivra Showroom — Begusarai</p>
               <p className="text-sm">{contactInfo.address}</p>
               <a href="https://maps.google.com/?q=Begusarai+Bihar+India" target="_blank" rel="noopener noreferrer" className="text-gold-700 hover:underline text-sm mt-2 inline-block">
                 Open in Google Maps →

@@ -78,8 +78,8 @@ export default function Shop() {
   return (
     <div className="bg-stone-50 min-h-screen">
       <SEOHead
-        title={`Shop ${catName} Online in Begusarai, Bihar | LuxDrape`}
-        description={`Browse premium ${catName.toLowerCase()} at LuxDrape. Blackout, sheer, velvet & custom options. Serving Begusarai, Patna & all Bihar. Free shipping over ₹5,000.`}
+        title={`Shop ${catName} Online in Begusarai, Bihar | Lumivra`}
+        description={`Browse premium ${catName.toLowerCase()} at Lumivra. Blackout, sheer, velvet & custom options. Serving Begusarai, Patna & all Bihar. Free shipping over ₹5,000.`}
         canonical={canonicalPath}
       />
       {/* Header */}
