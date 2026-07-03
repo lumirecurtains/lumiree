@@ -52,7 +52,7 @@ export default function AdminLayout() {
               <span className="text-white font-heading font-bold">L</span>
             </div>
             <div>
-              <p className="text-white font-heading font-bold text-sm leading-none">Lumivra</p>
+              <p className="text-white font-heading font-bold text-sm leading-none">Curtavra</p>
               <p className="text-[9px] text-gold-400 uppercase tracking-wider">Admin Panel</p>
             </div>
           </Link>

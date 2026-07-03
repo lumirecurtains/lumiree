@@ -66,7 +66,7 @@ function LoadingScreen() {
         <div className="w-12 h-12 bg-gradient-to-br from-gold-600 to-gold-800 rounded-sm flex items-center justify-center mx-auto mb-4 animate-pulse">
           <span className="text-white font-heading font-bold text-2xl">L</span>
         </div>
-        <p className="text-stone-400 text-sm">Loading Lumivra...</p>
+        <p className="text-stone-400 text-sm">Loading Curtavra...</p>
       </div>
     </div>
   );

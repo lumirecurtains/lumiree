@@ -37,7 +37,7 @@ export default function Footer() {
                 <span className="text-white font-heading font-bold text-xl">L</span>
               </div>
               <div>
-                <h4 className="font-heading text-xl font-bold text-white leading-none">Lumivra</h4>
+                <h4 className="font-heading text-xl font-bold text-white leading-none">Curtavra</h4>
                 <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase">Premium Curtains</p>
               </div>
             </div>
@@ -142,7 +142,7 @@ export default function Footer() {
       {/* Bottom */}
       <div className="border-t border-stone-800">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-stone-500">&copy; {new Date().getFullYear()} Lumivra, Begusarai, Bihar. Premium Luxury Curtains & Window Treatments.</p>
+          <p className="text-xs text-stone-500">&copy; {new Date().getFullYear()} Curtavra, Begusarai, Bihar. Premium Luxury Curtains & Window Treatments.</p>
           <div className="flex items-center gap-4 text-xs text-stone-500">
             <Link to="/privacy" className="hover:text-gold-400 transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-gold-400 transition-colors">Terms & Conditions</Link>

@@ -44,7 +44,7 @@ export default function SEOHead({ title, description, canonical, ogImage, type =
     setMeta('property', 'og:image', ogImage || DEFAULT_IMAGE);
     setMeta('property', 'og:image:alt', title);
     setMeta('property', 'og:url', pageUrl);
-    setMeta('property', 'og:site_name', 'Lumivra');
+    setMeta('property', 'og:site_name', 'Curtavra');
     setMeta('property', 'og:locale', 'en_IN');
 
     // Twitter

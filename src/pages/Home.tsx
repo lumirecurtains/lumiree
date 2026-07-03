@@ -200,7 +200,7 @@ function CategoriesSection() {
             >
               <img
                 src={categoryImages[cat.id] || STOCK_IMAGES.hero}
-                alt={`${cat.name} collection available in Begusarai Bihar — Lumivra`}
+                alt={`${cat.name} collection available in Begusarai Bihar — Curtavra`}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
               />
@@ -307,7 +307,7 @@ function Testimonials() {
         <div className="text-center mb-12">
           <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Testimonials</p>
           <h2 className="font-heading text-3xl md:text-4xl font-bold mb-3">What Our Customers Say</h2>
-          <p className="text-stone-400 max-w-2xl mx-auto">Real experiences from our valued customers who transformed their spaces with Lumivra curtains.</p>
+          <p className="text-stone-400 max-w-2xl mx-auto">Real experiences from our valued customers who transformed their spaces with Curtavra curtains.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -355,17 +355,17 @@ function BeforeAfter() {
             <div key={i} className="rounded-xl overflow-hidden shadow-lg">
               <div className="grid grid-cols-2">
                 <div className="relative">
-                  <img src={item.before} alt="Room before Lumivra curtain installation in Bihar" className="w-full h-48 md:h-64 object-cover" loading="lazy" width={600} height={400} />
+                  <img src={item.before} alt="Room before Curtavra curtain installation in Bihar" className="w-full h-48 md:h-64 object-cover" loading="lazy" width={600} height={400} />
                   <span className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">Before</span>
                 </div>
                 <div className="relative">
-                  <img src={item.after} alt="Room after Lumivra curtain installation in Begusarai" className="w-full h-48 md:h-64 object-cover" loading="lazy" width={600} height={400} />
+                  <img src={item.after} alt="Room after Curtavra curtain installation in Begusarai" className="w-full h-48 md:h-64 object-cover" loading="lazy" width={600} height={400} />
                   <span className="absolute bottom-2 left-2 bg-gold-600 text-white text-xs px-2 py-1 rounded">After</span>
                 </div>
               </div>
               <div className="bg-stone-50 p-4 text-center">
                 <h4 className="font-heading font-semibold text-stone-900">{item.room} Transformation</h4>
-                <p className="text-sm text-stone-500">Lumivra curtain installation</p>
+                <p className="text-sm text-stone-500">Curtavra curtain installation</p>
               </div>
             </div>
           ))}
@@ -498,7 +498,7 @@ function LocalSEOSection() {
           <p className="text-gold-600 text-sm tracking-[0.3em] uppercase mb-2">Begusarai's Trusted Curtain Store</p>
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-stone-900 mb-4">Premium Curtains & Window Treatments in Bihar</h2>
           <p className="text-stone-600 leading-relaxed">
-            Lumivra is Begusarai's leading destination for luxury curtains and custom window treatments. Whether you're furnishing a new home 
+            Curtavra is Begusarai's leading destination for luxury curtains and custom window treatments. Whether you're furnishing a new home 
             in Begusarai, redesigning your living room in Patna, or outfitting a hotel in Muzaffarpur — we deliver premium curtains across all of Bihar.
           </p>
         </div>
@@ -523,7 +523,7 @@ export default function Home() {
   return (
     <div>
       <SEOHead
-        title="Lumivra — Premium Luxury Curtains in Begusarai, Bihar | Custom Window Treatments"
+        title="Curtavra — Premium Luxury Curtains in Begusarai, Bihar | Custom Window Treatments"
         description="Begusarai's premier luxury curtain store. Shop blackout, sheer, velvet & custom curtains. Professional installation across Bihar. Free shipping over ₹5,000. Serving Patna, Muzaffarpur, Darbhanga & all Bihar."
         canonical="/"
       />

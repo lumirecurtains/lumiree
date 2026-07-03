@@ -79,17 +79,17 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center py-16 px-4">
-      <SEOHead title="Sign In | Lumivra" description="Sign in to your Lumivra account." canonical="/login" noindex />
+      <SEOHead title="Sign In | Curtavra" description="Sign in to your Curtavra account." canonical="/login" noindex />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-gold-600 to-gold-800 rounded-sm flex items-center justify-center">
               <span className="text-white font-heading font-bold text-xl">L</span>
             </div>
-            <span className="font-heading text-2xl font-bold text-stone-900">Lumivra</span>
+            <span className="font-heading text-2xl font-bold text-stone-900">Curtavra</span>
           </Link>
           <h1 className="font-heading text-2xl font-bold text-stone-900">{isLogin ? 'Welcome Back' : 'Create Account'}</h1>
-          <p className="text-stone-500 mt-1">{isLogin ? 'Sign in to your account' : 'Join Lumivra for exclusive access'}</p>
+          <p className="text-stone-500 mt-1">{isLogin ? 'Sign in to your account' : 'Join Curtavra for exclusive access'}</p>
         </div>
 
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100">

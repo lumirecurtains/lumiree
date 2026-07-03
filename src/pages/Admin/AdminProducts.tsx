@@ -12,7 +12,7 @@ function generateDescription(name: string, category: string, material: string, c
   return {
     short: `Premium ${material.toLowerCase()} ${category.replace('-', ' ')} curtains in ${color.toLowerCase()}. Expertly crafted for elegance and durability.`,
     long: `Discover our ${name} — a stunning addition to our ${category.replace('-', ' ')} collection. Crafted from premium ${material.toLowerCase()} fabric, these curtains combine luxury with functionality. The rich ${color.toLowerCase()} tone adds sophistication to any room, while the expert construction ensures long-lasting beauty. Perfect for homeowners and designers who appreciate quality window treatments.`,
-    seoTitle: `${name} | Premium ${category.replace('-', ' ')} Curtains | Lumivra`,
+    seoTitle: `${name} | Premium ${category.replace('-', ' ')} Curtains | Curtavra`,
     seoDesc: `Shop ${name} - premium ${material.toLowerCase()} ${category.replace('-', ' ')} curtains in ${color.toLowerCase()}. Free shipping on orders over ₹5,000. Expert installation available.`,
   };
 }

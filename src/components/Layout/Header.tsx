@@ -77,7 +77,7 @@ export default function Header() {
                 <span className="text-white font-heading font-bold text-lg md:text-xl">L</span>
               </div>
               <div>
-                <h1 className="font-heading text-lg md:text-2xl font-bold text-stone-900 tracking-tight leading-none">Lumivra</h1>
+                <h1 className="font-heading text-lg md:text-2xl font-bold text-stone-900 tracking-tight leading-none">Curtavra</h1>
                 <p className="text-[9px] md:text-[10px] text-stone-400 tracking-[0.2em] uppercase leading-none">Premium Curtains</p>
               </div>
             </Link>

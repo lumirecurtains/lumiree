@@ -7,24 +7,24 @@ export default function Gallery() {
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   const images = [
-    { src: STOCK_IMAGES.hero, alt: 'Elegant traditional curtains in sunlit living room — Lumivra Begusarai', category: 'Living Room' },
+    { src: STOCK_IMAGES.hero, alt: 'Elegant traditional curtains in sunlit living room — Curtavra Begusarai', category: 'Living Room' },
     { src: STOCK_IMAGES.bedroom, alt: 'Modern bedroom with sheer curtains installed in Bihar', category: 'Bedroom' },
-    { src: STOCK_IMAGES.blackout, alt: 'Premium blackout velvet curtain — Lumivra collection', category: 'Blackout' },
+    { src: STOCK_IMAGES.blackout, alt: 'Premium blackout velvet curtain — Curtavra collection', category: 'Blackout' },
     { src: STOCK_IMAGES.luxury, alt: 'Luxury green curtains for living room in Begusarai', category: 'Luxury' },
     { src: STOCK_IMAGES.sheer, alt: 'White sheer curtains filtering natural light — Bihar homes', category: 'Sheer' },
-    { src: STOCK_IMAGES.livingRoom, alt: 'Dining room beige curtains by Lumivra', category: 'Living Room' },
+    { src: STOCK_IMAGES.livingRoom, alt: 'Dining room beige curtains by Curtavra', category: 'Living Room' },
     { src: STOCK_IMAGES.modern, alt: 'Modern bedroom curtains available in Begusarai', category: 'Modern' },
     { src: STOCK_IMAGES.drapes, alt: 'Gold and blue decorative luxury drapes', category: 'Luxury' },
-    { src: STOCK_IMAGES.elegant, alt: 'Custom drapery installation by Lumivra Bihar', category: 'Custom' },
+    { src: STOCK_IMAGES.elegant, alt: 'Custom drapery installation by Curtavra Bihar', category: 'Custom' },
     { src: STOCK_IMAGES.velvet, alt: 'Soft pink velvet curtain fabric close-up', category: 'Fabrics' },
     { src: STOCK_IMAGES.gold, alt: 'Golden hanging curtain for luxury interiors', category: 'Luxury' },
-    { src: STOCK_IMAGES.minimal, alt: 'Minimalist bedroom curtains from Lumivra', category: 'Minimal' },
+    { src: STOCK_IMAGES.minimal, alt: 'Minimalist bedroom curtains from Curtavra', category: 'Minimal' },
     { src: STOCK_IMAGES.green, alt: 'Bedroom with green curtains — Begusarai home', category: 'Bedroom' },
     { src: STOCK_IMAGES.hotel, alt: 'Hotel curtain installation in Bihar', category: 'Hotel' },
     { src: STOCK_IMAGES.white, alt: 'White sheer curtains for bright bedrooms', category: 'Sheer' },
-    { src: STOCK_IMAGES.dark, alt: 'Dark blackout curtain fabric by Lumivra', category: 'Blackout' },
+    { src: STOCK_IMAGES.dark, alt: 'Dark blackout curtain fabric by Curtavra', category: 'Blackout' },
     { src: STOCK_IMAGES.office, alt: 'Office curtain panels for professional spaces in Bihar', category: 'Office' },
-    { src: STOCK_IMAGES.vintage, alt: 'Custom vintage curtain design — Lumivra Begusarai', category: 'Custom' },
+    { src: STOCK_IMAGES.vintage, alt: 'Custom vintage curtain design — Curtavra Begusarai', category: 'Custom' },
   ];
 
   const [filter, setFilter] = useState('All');
@@ -33,7 +33,7 @@ export default function Gallery() {
 
   return (
     <div>
-      <SEOHead title="Curtain Gallery — Installation Photos | Lumivra Begusarai" description="Browse stunning curtain installation photos from Lumivra. Get inspired by luxury, sheer, blackout & custom curtain designs for homes and hotels in Bihar." canonical="/gallery" />
+      <SEOHead title="Curtain Gallery — Installation Photos | Curtavra Begusarai" description="Browse stunning curtain installation photos from Curtavra. Get inspired by luxury, sheer, blackout & custom curtain designs for homes and hotels in Bihar." canonical="/gallery" />
       <div className="bg-gradient-to-r from-stone-900 to-stone-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Inspiration</p>

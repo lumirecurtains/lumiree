@@ -36,7 +36,7 @@ export default function CustomOrder() {
 
   return (
     <div>
-      <SEOHead title="Custom Curtains — Made to Measure in Begusarai, Bihar | Lumivra" description="Order custom curtains tailored to your windows. Choose from 200+ fabrics, styles & pleat types. Professional measurement & installation in Begusarai & Bihar." canonical="/custom-order" />
+      <SEOHead title="Custom Curtains — Made to Measure in Begusarai, Bihar | Curtavra" description="Order custom curtains tailored to your windows. Choose from 200+ fabrics, styles & pleat types. Professional measurement & installation in Begusarai & Bihar." canonical="/custom-order" />
       {/* Hero */}
       <div className="relative h-[40vh] overflow-hidden">
         <img src={STOCK_IMAGES.fabric} alt="Custom curtain fabrics in Begusarai Bihar" className="w-full h-full object-cover" />

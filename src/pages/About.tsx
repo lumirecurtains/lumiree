@@ -6,15 +6,15 @@ import SEOHead from '@/components/SEOHead';
 export default function About() {
   return (
     <div>
-      <SEOHead title="About Lumivra — Curtain Manufacturer & Bulk Stitching Unit in Begusarai, Bihar" description="Lumivra is Begusarai's trusted curtain manufacturer and bulk stitching unit. We supply shops & dealers with expertly stitched custom curtains, plus home installation across Bihar." canonical="/about" />
+      <SEOHead title="About Curtavra — Curtain Manufacturer & Bulk Stitching Unit in Begusarai, Bihar" description="Curtavra is Begusarai's trusted curtain manufacturer and bulk stitching unit. We supply shops & dealers with expertly stitched custom curtains, plus home installation across Bihar." canonical="/about" />
       {/* Hero */}
       <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
-        <img src={STOCK_IMAGES.elegant} alt="Lumivra curtain showroom in Begusarai Bihar" className="w-full h-full object-cover" />
+        <img src={STOCK_IMAGES.elegant} alt="Curtavra curtain showroom in Begusarai Bihar" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex items-center justify-center text-center">
           <div>
             <p className="text-gold-400 text-sm tracking-[0.3em] uppercase mb-2">Our Story</p>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white">About Lumivra</h1>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white">About Curtavra</h1>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@ export default function About() {
               <p className="text-gold-600 text-sm tracking-[0.3em] uppercase mb-2">Since 2010 • Begusarai, Bihar</p>
               <h2 className="font-heading text-3xl md:text-4xl font-bold text-stone-900 mb-6">Crafting Elegance for Every Window in Bihar</h2>
               <p className="text-stone-600 leading-relaxed mb-4">
-                Founded in Begusarai, Lumivra was built with a singular vision: to bring world-class curtain craftsmanship to 
+                Founded in Begusarai, Curtavra was built with a singular vision: to bring world-class curtain craftsmanship to 
                 homes and businesses across Bihar. We believe the right curtains don't just dress a window — they define a 
                 room's character, mood, and personality.
               </p>
@@ -42,7 +42,7 @@ export default function About() {
                 luxury, durability, and timeless elegance.
               </p>
               <p className="text-stone-600 leading-relaxed">
-                <strong className="text-stone-900">For shops, dealers & retailers:</strong> Lumivra is also a trusted 
+                <strong className="text-stone-900">For shops, dealers & retailers:</strong> Curtavra is also a trusted 
                 bulk curtain stitching and manufacturing partner. Shops across Bihar send us fabric in bulk, and our 
                 expert unit stitches, designs, and finishes curtains to exact specifications — delivered on time, every 
                 time. We also provide professional home curtain installation on request. Contact us for wholesale 
@@ -51,9 +51,9 @@ export default function About() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <img src={STOCK_IMAGES.velvet} alt="Premium velvet curtain fabric available in Begusarai" className="rounded-xl w-full h-48 md:h-64 object-cover" loading="lazy" />
-              <img src={STOCK_IMAGES.sheer} alt="Sheer curtain detail from Lumivra Bihar" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
+              <img src={STOCK_IMAGES.sheer} alt="Sheer curtain detail from Curtavra Bihar" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
               <img src={STOCK_IMAGES.bedroom} alt="Bedroom curtain installation in Bihar" className="rounded-xl w-full h-48 md:h-64 object-cover" loading="lazy" />
-              <img src={STOCK_IMAGES.luxury} alt="Luxury curtain collection at Lumivra Begusarai" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
+              <img src={STOCK_IMAGES.luxury} alt="Luxury curtain collection at Curtavra Begusarai" className="rounded-xl w-full h-48 md:h-64 object-cover mt-8" loading="lazy" />
             </div>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-stone-900 mb-3">Our Promise</h2>
-            <p className="text-stone-500 max-w-2xl mx-auto">What sets Lumivra apart in the world of window treatments.</p>
+            <p className="text-stone-500 max-w-2xl mx-auto">What sets Curtavra apart in the world of window treatments.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
